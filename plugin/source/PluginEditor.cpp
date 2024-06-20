@@ -8,9 +8,10 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
   juce::ignoreUnused(processorRef);
 
   addAndMakeVisible(webView);
-  setResizable(true, true);
+  webView.goToURL("https://juce.com");
 
-  setSize(400, 300);
+  setResizable(true, true);
+  setSize(800, 600);
 }
 
 AudioPluginAudioProcessorEditor::~AudioPluginAudioProcessorEditor() {}
