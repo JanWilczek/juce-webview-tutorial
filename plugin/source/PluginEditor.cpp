@@ -8,6 +8,7 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
   juce::ignoreUnused(processorRef);
 
   addAndMakeVisible(webView);
+  setResizable(true, true);
 
   setSize(400, 300);
 }
@@ -15,6 +16,6 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
 AudioPluginAudioProcessorEditor::~AudioPluginAudioProcessorEditor() {}
 
 void AudioPluginAudioProcessorEditor::resized() {
-  webView.setBounds(getBounds());
+  webView.setBounds(getBounds().withTrimmedLeft(getWidth() / 2));
 }
 } // namespace audio_plugin
