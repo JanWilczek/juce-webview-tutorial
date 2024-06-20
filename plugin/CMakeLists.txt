@@ -15,8 +15,8 @@ juce_add_plugin(${PROJECT_NAME}
     NEEDS_MIDI_OUTPUT FALSE # may change this
     PLUGIN_MANUFACTURER_CODE MCMP # change this
     PLUGIN_CODE EXPL # change this
-    FORMATS VST3 # may change this
-    PRODUCT_NAME "JuceWebViewTutorial" # change this
+    FORMATS VST3 Standalone
+    PRODUCT_NAME "JuceWebViewTutorial"
 )
 
 # Sets the source files of the plugin project.
@@ -45,10 +45,10 @@ target_link_libraries(${PROJECT_NAME}
         juce::juce_recommended_warning_flags
 )
 
-# These definitions are recommended by JUCE.
 target_compile_definitions(${PROJECT_NAME}
     PUBLIC
-        JUCE_WEB_BROWSER=0
+        # JUCE_WEB_BROWSER=1 is important for using WebBrowserComponent
+        JUCE_WEB_BROWSER=1
         JUCE_USE_CURL=0
         JUCE_VST3_CAN_REPLACE_VST2=0
 )
