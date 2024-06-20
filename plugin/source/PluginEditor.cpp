@@ -40,6 +40,11 @@ static const char* getMimeForExtension(const juce::String& extension) {
   jassertfalse;
   return "";
 }
+
+juce::Identifier getExampleEventId() {
+  static const juce::Identifier id{"exampleevent"};
+  return id;
+}
 }  // namespace
 
 AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
@@ -73,6 +78,12 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
   };
   addAndMakeVisible(runJavaScriptButton);
 
+  emitJavaScriptEventButton.onClick = [this] {
+    static const juce::var valueToEmit{42.0};
+    webView.emitEventIfBrowserIsVisible(getExampleEventId(), valueToEmit);
+  };
+  addAndMakeVisible(emitJavaScriptEventButton);
+
   setResizable(true, true);
   setSize(800, 600);
 }
@@ -83,6 +94,7 @@ void AudioPluginAudioProcessorEditor::resized() {
   auto bounds = getBounds();
   webView.setBounds(bounds.removeFromRight(getWidth() / 2));
   runJavaScriptButton.setBounds(bounds.removeFromTop(50).reduced(5));
+  emitJavaScriptEventButton.setBounds(bounds.removeFromTop(50).reduced(5));
 }
 
 auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const

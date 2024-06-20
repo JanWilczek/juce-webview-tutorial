@@ -18,6 +18,7 @@ private:
   std::optional<Resource> getResource(const juce::String& url) const;
 
   juce::TextButton runJavaScriptButton{"Run some JavaScript"};
+  juce::TextButton emitJavaScriptEventButton{"Emit JavaScript event"};
 
   AudioPluginAudioProcessor& processorRef;
 
