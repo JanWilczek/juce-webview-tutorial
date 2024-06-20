@@ -108,7 +108,10 @@ auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const
           .getParentDirectory()
           .getChildFile("public");
 
-  DBG("Resource files root is " + resourceFilesRoot.getFullPathName());
+  [[maybe_unused]] static auto printRootOnce = [] {
+    DBG("Resource files root is " + resourceFilesRoot.getFullPathName());
+    return true;
+  }();
 
   const auto resourceToRetrieve =
       url == "/" ? "index.html" : url.fromFirstOccurrenceOf("/", false, false);
