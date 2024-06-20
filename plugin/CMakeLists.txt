@@ -67,3 +67,14 @@ endif()
 
 # In Visual Studio this command provides a nice grouping of source files in "filters".
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
+# Copy WebView UI files
+set(UI_FILES_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ui/public")
+get_target_property(PLUGIN_OUTPUT_DIR ${PROJECT_NAME} RUNTIME_OUTPUT_DIRECTORY)
+set(UI_FILES_DEST_DIR "${PLUGIN_OUTPUT_DIR}/public")
+
+add_custom_command(
+  TARGET ${PROJECT_NAME} POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${UI_FILES_SOURCE_DIR} ${UI_FILES_DEST_DIR}
+  COMMENT "Copying UI files to plugin's output directory"
+)
