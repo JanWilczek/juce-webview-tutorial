@@ -51,13 +51,14 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
     AudioPluginAudioProcessor& p)
     : AudioProcessorEditor(&p),
       processorRef(p),
-      webView{
-          juce::WebBrowserComponent::Options{}
-              .withResourceProvider(
-                  [this](const auto& url) { return getResource(url); })
-              .withInitialisationData("vendor", JUCE_COMPANY_NAME)
-              .withInitialisationData("pluginName", JUCE_PRODUCT_NAME)
-              .withInitialisationData("pluginVersion", JUCE_PRODUCT_VERSION)} {
+      webView{juce::WebBrowserComponent::Options{}
+                  .withResourceProvider(
+                      [this](const auto& url) { return getResource(url); })
+                  .withInitialisationData("vendor", JUCE_COMPANY_NAME)
+                  .withInitialisationData("pluginName", JUCE_PRODUCT_NAME)
+                  .withInitialisationData("pluginVersion", JUCE_PRODUCT_VERSION)
+                  .withUserScript("console.log(\"C++ backend here: This is run "
+                                  "before any other loading happens\");")} {
   juce::ignoreUnused(processorRef);
 
   addAndMakeVisible(webView);
