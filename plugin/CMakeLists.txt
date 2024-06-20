@@ -68,8 +68,13 @@ endif()
 # In Visual Studio this command provides a nice grouping of source files in "filters".
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
-# Copy WebView UI files
+# Folder where web UI data reside
 set(UI_FILES_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ui/public")
+
+# Copy JUCE frontend library to plugin UI files
+file(COPY "${JUCE_MODULES_DIR}/juce_gui_extra/native/javascript/" DESTINATION "${UI_FILES_SOURCE_DIR}/js/juce/")
+
+# Copy WebView UI files
 get_target_property(PLUGIN_OUTPUT_DIR ${PROJECT_NAME} RUNTIME_OUTPUT_DIRECTORY)
 set(UI_FILES_DEST_DIR "${PLUGIN_OUTPUT_DIR}/public")
 
