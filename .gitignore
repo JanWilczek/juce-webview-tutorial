@@ -4,6 +4,7 @@ libs/
 build/
 xcode-build/
 release-build/
+juce/
 
 # Prerequisites
 *.d
