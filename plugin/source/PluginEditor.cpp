@@ -51,8 +51,13 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
     AudioPluginAudioProcessor& p)
     : AudioProcessorEditor(&p),
       processorRef(p),
-      webView(juce::WebBrowserComponent::Options{}.withResourceProvider(
-          [this](const auto& url) { return getResource(url); })) {
+      webView{
+          juce::WebBrowserComponent::Options{}
+              .withResourceProvider(
+                  [this](const auto& url) { return getResource(url); })
+              .withInitialisationData("vendor", JUCE_COMPANY_NAME)
+              .withInitialisationData("pluginName", JUCE_PRODUCT_NAME)
+              .withInitialisationData("pluginVersion", JUCE_PRODUCT_VERSION)} {
   juce::ignoreUnused(processorRef);
 
   addAndMakeVisible(webView);

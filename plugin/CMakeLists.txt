@@ -9,15 +9,22 @@ set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/JuceWebViewTutorial")
 
 # Adds a plugin target (that's basically what the Projucer does).
 juce_add_plugin(${PROJECT_NAME}
-    COMPANY_NAME MyCompany # change this
-    IS_SYNTH FALSE # may change this
-    NEEDS_MIDI_INPUT FALSE # may change this
-    NEEDS_MIDI_OUTPUT FALSE # may change this
-    PLUGIN_MANUFACTURER_CODE MCMP # change this
-    PLUGIN_CODE EXPL # change this
+    COMPANY_NAME WolfSound
+    IS_SYNTH FALSE
+    NEEDS_MIDI_INPUT FALSE
+    NEEDS_MIDI_OUTPUT FALSE
+    PLUGIN_MANUFACTURER_CODE WFSD
+    PLUGIN_CODE JWVT
     FORMATS VST3 Standalone
     PRODUCT_NAME "JuceWebViewTutorial"
 )
+
+get_target_property(PRODUCT_NAME ${PROJECT_NAME} JUCE_PRODUCT_NAME)
+get_target_property(COMPANY_NAME ${PROJECT_NAME} JUCE_COMPANY_NAME)
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+  JUCE_PRODUCT_NAME="${PRODUCT_NAME}"
+  JUCE_COMPANY_NAME="${COMPANY_NAME}"
+  JUCE_PRODUCT_VERSION="${PROJECT_VERSION}")
 
 # Sets the source files of the plugin project.
 target_sources(${PROJECT_NAME}
