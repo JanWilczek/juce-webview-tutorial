@@ -18,7 +18,11 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
   juce::ignoreUnused(processorRef);
 
   addAndMakeVisible(webView);
+
+  // WebBrowserComponent can display any URL
   // webView.goToURL("https://juce.com");
+
+  // This is necessary if we want to use a ResourceProvider
   webView.goToURL(webView.getResourceProviderRoot());
 
   setResizable(true, true);
