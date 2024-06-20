@@ -10,11 +10,7 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
     : AudioProcessorEditor(&p),
       processorRef(p),
       webView(juce::WebBrowserComponent::Options{}.withResourceProvider(
-          [](const auto& url) {
-            juce::ignoreUnused(url);
-            DBG("ResourceProvider called with " + url);
-            return std::nullopt;
-          })) {
+          [this](const auto& url) { return getResource(url); })) {
   juce::ignoreUnused(processorRef);
 
   addAndMakeVisible(webView);
@@ -33,5 +29,11 @@ AudioPluginAudioProcessorEditor::~AudioPluginAudioProcessorEditor() {}
 
 void AudioPluginAudioProcessorEditor::resized() {
   webView.setBounds(getBounds().withTrimmedLeft(getWidth() / 2));
+}
+
+auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const
+    -> std::optional<Resource> {
+  DBG("ResourceProvider called with " + url);
+  return std::nullopt;
 }
 }  // namespace audio_plugin

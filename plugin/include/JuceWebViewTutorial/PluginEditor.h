@@ -13,6 +13,9 @@ public:
   void resized() override;
 
 private:
+  using Resource = juce::WebBrowserComponent::Resource;
+  std::optional<Resource> getResource(const juce::String& url) const;
+
   AudioPluginAudioProcessor& processorRef;
 
   juce::WebBrowserComponent webView;
