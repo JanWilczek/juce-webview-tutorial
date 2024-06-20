@@ -34,6 +34,21 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
   // This is necessary if we want to use a ResourceProvider
   webView.goToURL(webView.getResourceProviderRoot());
 
+  runJavaScriptButton.onClick = [this] {
+    constexpr auto JAVASCRIPT_TO_RUN{"console.log(\"Hello from C++!\")"};
+    webView.evaluateJavascript(
+        JAVASCRIPT_TO_RUN,
+        [](juce::WebBrowserComponent::EvaluationResult result) {
+          if (const auto* resultPtr = result.getResult()) {
+            DBG("JavaScript evaluation result: " + resultPtr->toString());
+          } else {
+            DBG("JavaScript evaluation failed because " +
+                result.getError()->message);
+          }
+        });
+  };
+  addAndMakeVisible(runJavaScriptButton);
+
   setResizable(true, true);
   setSize(800, 600);
 }
@@ -41,7 +56,9 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
 AudioPluginAudioProcessorEditor::~AudioPluginAudioProcessorEditor() {}
 
 void AudioPluginAudioProcessorEditor::resized() {
-  webView.setBounds(getBounds().withTrimmedLeft(getWidth() / 2));
+  auto bounds = getBounds();
+  webView.setBounds(bounds.removeFromRight(getWidth() / 2));
+  runJavaScriptButton.setBounds(bounds.removeFromTop(50).reduced(5));
 }
 
 auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const

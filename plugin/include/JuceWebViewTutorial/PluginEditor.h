@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PluginProcessor.h"
+#include "juce_gui_basics/juce_gui_basics.h"
 #include <juce_gui_extra/juce_gui_extra.h>
 
 namespace audio_plugin {
@@ -15,6 +16,8 @@ public:
 private:
   using Resource = juce::WebBrowserComponent::Resource;
   std::optional<Resource> getResource(const juce::String& url) const;
+
+  juce::TextButton runJavaScriptButton{"Run some JavaScript"};
 
   AudioPluginAudioProcessor& processorRef;
 
