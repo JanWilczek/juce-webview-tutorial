@@ -1,5 +1,6 @@
 #include "JuceWebViewTutorial/PluginEditor.h"
 #include <optional>
+#include <ranges>
 #include "JuceWebViewTutorial/PluginProcessor.h"
 #include "juce_core/juce_core.h"
 #include "juce_graphics/juce_graphics.h"
@@ -54,15 +55,25 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
     : AudioProcessorEditor(&p),
       processorRef(p),
       webView{juce::WebBrowserComponent::Options{}
-                  .withBackend(juce::WebBrowserComponent::Options::Backend::webview2)
-    .withWinWebView2Options(juce::WebBrowserComponent::Options::WinWebView2{}.withBackgroundColour(juce::Colours::white))
+                  .withBackend(
+                      juce::WebBrowserComponent::Options::Backend::webview2)
+                  .withWinWebView2Options(
+                      juce::WebBrowserComponent::Options::WinWebView2{}
+                          .withBackgroundColour(juce::Colours::white))
                   .withResourceProvider(
                       [this](const auto& url) { return getResource(url); })
                   .withInitialisationData("vendor", JUCE_COMPANY_NAME)
                   .withInitialisationData("pluginName", JUCE_PRODUCT_NAME)
                   .withInitialisationData("pluginVersion", JUCE_PRODUCT_VERSION)
                   .withUserScript("console.log(\"C++ backend here: This is run "
-                                  "before any other loading happens\");")} {
+                                  "before any other loading happens\");")
+                  .withNativeFunction(
+                      juce::Identifier{"nativeFunction"},
+                      [this](const juce::Array<juce::var>& args,
+                             juce::WebBrowserComponent::NativeFunctionCompletion
+                                 completion) {
+                        nativeFunction(args, std::move(completion));
+                      })} {
   juce::ignoreUnused(processorRef);
 
   addAndMakeVisible(webView);
@@ -135,5 +146,17 @@ auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const
   }
 
   return std::nullopt;
+}
+
+void AudioPluginAudioProcessorEditor::nativeFunction(
+    const juce::Array<juce::var>& args,
+    juce::WebBrowserComponent::NativeFunctionCompletion completion) {
+  using namespace std::views;
+  juce::String concatenatedString;
+  for (const auto& string : args | transform(&juce::var::toString)) {
+    concatenatedString += string;
+  }
+  DBG("Native function called with args: " + concatenatedString);
+  completion("nativeFunction callback: All OK!");
 }
 }  // namespace audio_plugin

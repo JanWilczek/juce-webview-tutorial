@@ -9,3 +9,15 @@ const data = window.__JUCE__.initialisationData;
 document.getElementById("vendor").innerText = data.vendor;
 document.getElementById("pluginName").innerText = data.pluginName;
 document.getElementById("pluginVersion").innerText = data.pluginVersion;
+
+const nativeFunction = Juce.getNativeFunction("nativeFunction");
+
+document.addEventListener("DOMContentLoaded", () => {
+  const button = document.getElementById("nativeFunctionButton");
+  button.addEventListener("click", () => {
+    nativeFunction("one", 2, null).then(result => {
+      console.log(result);
+    });
+  });
+});
+
