@@ -8,12 +8,8 @@ cmake_minimum_required(VERSION 3.22)
 # Sets a few variables, like PROJECT_NAME
 project(Juce8WebViewTutorial)
 
-# Always use the newest C++ standard on green-field projects if possible.
-set(CMAKE_CXX_STANDARD 23)
-if (APPLE)
-    # On Mac, we need to wait for a new JUCE version that fixes the compilation issue
-    set(CMAKE_CXX_STANDARD 20)
-endif()
+# Safe choice
+set(CMAKE_CXX_STANDARD 20)
 
 # I like to download the dependencies to the same folder as the project.
 # If you want to install them system wide, set CPM_SOURCE_CACHE with the path to the dependencies
@@ -54,6 +50,14 @@ if (MSVC)
   if (NOT DOWNLOAD_WEBVIEW2_RESULT EQUAL 0)
       message(FATAL_ERROR "Failed to download Microsoft.Web.WebView2 NuGet package. Result: ${DOWNLOAD_WEBVIEW2_RESULT}")
   endif()
+endif()
+
+# Enables strict warnings and treats warnings as errors.
+# This needs to be set up only for your projects, not 3rd party
+if (MSVC)
+set(CXX_PROJECT_WARNINGS "/W4;/WX;/wd4820;/wd4514")
+else()
+set(CXX_PROJECT_WARNINGS "-Wall;-Wextra;-Wpedantic")
 endif()
 
 # This command allows running tests from the "build" folder (the one where CMake generates the project to).

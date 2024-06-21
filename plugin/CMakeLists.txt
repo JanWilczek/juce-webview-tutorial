@@ -29,10 +29,13 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
   JUCE_PRODUCT_VERSION="${PROJECT_VERSION}")
 
 # Sets the source files of the plugin project.
+set(SOURCES
+        source/PluginEditor.cpp
+        source/PluginProcessor.cpp)
+
 target_sources(${PROJECT_NAME}
     PRIVATE
-        source/PluginEditor.cpp
-        source/PluginProcessor.cpp
+        ${SOURCES}
         ${INCLUDE_DIR}/PluginEditor.h
         ${INCLUDE_DIR}/PluginProcessor.h
 )
@@ -42,6 +45,9 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+
+# Mark JUCE headers as system headers to suppress warnings in them
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${JUCE_MODULES_DIR})
 
 # Links to all necessary dependencies. The present ones are recommended by JUCE.
 # If you use one of the additional modules, like the DSP module, you need to specify it here.
@@ -64,17 +70,7 @@ target_compile_definitions(${PROJECT_NAME}
         JUCE_USE_WIN_WEBVIEW2_WITH_STATIC_LINKING=1
 )
 
-# Enables all warnings and treats warnings as errors.
-# This needs to be set up only for your projects, not 3rd party
-if (MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /Wall /WX)
-    # Silences some deprecation warnings that (hopefully) will be fixed in a future release of JUCE.
-    target_compile_definitions(${PROJECT_NAME}
-        PRIVATE
-            _SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING)
-else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
-endif()
+set_source_files_properties(${SOURCES} PROPERTIES COMPILE_OPTIONS "${CXX_PROJECT_WARNINGS}")
 
 # In Visual Studio this command provides a nice grouping of source files in "filters".
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/..)
