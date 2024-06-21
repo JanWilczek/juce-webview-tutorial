@@ -8,12 +8,14 @@
 namespace audio_plugin {
 namespace {
 std::vector<std::byte> streamToVector(juce::InputStream& stream) {
+  // Workaround to make ssize_t work cross-platform.
+  using namespace juce;
   const auto sizeInBytes = static_cast<size_t>(stream.getTotalLength());
   std::vector<std::byte> result(sizeInBytes);
   stream.setPosition(0);
   [[maybe_unused]] const auto bytesRead =
       stream.read(result.data(), result.size());
-  jassert(bytesRead == static_cast<juce::ssize_t>(sizeInBytes));
+  jassert(bytesRead == static_cast<ssize_t>(sizeInBytes));
   return result;
 }
 
