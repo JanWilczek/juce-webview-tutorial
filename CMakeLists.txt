@@ -44,6 +44,18 @@ CPMAddPackage(
         "gtest_force_shared_crt ON"
 )
 
+# Install Microsoft.Web.WebView2 NuGet package to allow WebViews on Windows
+if (MSVC)
+  message(STATUS "Setting up WebView dependencies")
+  execute_process(COMMAND pwsh -NoProfile -File scripts/DownloadWebView2.ps1
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  RESULT_VARIABLE DOWNLOAD_WEBVIEW2_RESULT)
+
+  if (NOT DOWNLOAD_WEBVIEW2_RESULT EQUAL 0)
+      message(FATAL_ERROR "Failed to download Microsoft.Web.WebView2 NuGet package. Result: ${DOWNLOAD_WEBVIEW2_RESULT}")
+  endif()
+endif()
+
 # This command allows running tests from the "build" folder (the one where CMake generates the project to).
 enable_testing()
 
