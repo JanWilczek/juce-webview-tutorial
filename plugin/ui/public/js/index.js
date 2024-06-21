@@ -26,5 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
     emittedCount++;
     window.__JUCE__.backend.emitEvent("exampleJavaScriptEvent", { emittedCount : emittedCount });
   });
+
+  const slider = document.getElementById("gainSlider");
+  slider.oninput = function() {
+    const sliderState = Juce.getSliderState("GAIN");
+    sliderState.setNormalisedValue(this.value);
+  }
 });
 

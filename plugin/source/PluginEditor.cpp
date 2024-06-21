@@ -1,4 +1,5 @@
 #include "JuceWebViewTutorial/PluginEditor.h"
+#include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_events/juce_events.h>
 #include <optional>
 #include <ranges>
@@ -58,6 +59,10 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
       processorRef(p),
       gainSliderAttachment{processorRef.state, id::GAIN.getParamID(),
                            gainSlider},
+      webGainRelay{webView, id::GAIN.getParamID()},
+      webGainSliderAttachment{
+          *processorRef.state.getParameter(id::GAIN.getParamID()), webGainRelay,
+          nullptr},
       webView{
           juce::WebBrowserComponent::Options{}
               .withBackend(
@@ -87,7 +92,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
                          juce::WebBrowserComponent::NativeFunctionCompletion
                              completion) {
                     nativeFunction(args, std::move(completion));
-                  })} {
+                  })
+              .withOptionsFrom(webGainRelay)} {
   juce::ignoreUnused(processorRef);
 
   addAndMakeVisible(webView);

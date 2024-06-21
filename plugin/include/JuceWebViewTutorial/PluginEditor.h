@@ -31,6 +31,8 @@ private:
   juce::Slider gainSlider{"gainSlider"};
   juce::AudioProcessorValueTreeState::SliderAttachment gainSliderAttachment;
 
+  juce::WebSliderRelay webGainRelay;
+  juce::WebSliderParameterAttachment webGainSliderAttachment;
   juce::WebBrowserComponent webView;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginAudioProcessorEditor)
