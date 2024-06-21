@@ -17,6 +17,7 @@ juce_add_plugin(${PROJECT_NAME}
     PLUGIN_CODE JWVT
     FORMATS VST3 Standalone
     PRODUCT_NAME "JuceWebViewTutorial"
+    # This will force JUCE to look for the WebView2 NuGet package on Windows
     NEEDS_WEBVIEW2 TRUE
 )
 
@@ -59,6 +60,7 @@ target_compile_definitions(${PROJECT_NAME}
         JUCE_WEB_BROWSER=1
         JUCE_USE_CURL=0
         JUCE_VST3_CAN_REPLACE_VST2=0
+        # This will enable WebView2 as the WebView backend on Windows
         JUCE_USE_WIN_WEBVIEW2_WITH_STATIC_LINKING=1
 )
 
