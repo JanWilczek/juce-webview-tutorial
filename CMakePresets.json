@@ -56,6 +56,11 @@
       "configurePreset": "release"
     },
     {
+      "name": "vs",
+      "inherits": "default",
+      "configurePreset": "vs"
+    },
+    {
       "name": "Xcode",
       "inherits": "default",
       "configurePreset": "Xcode",
