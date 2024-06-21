@@ -1,4 +1,5 @@
 #include "JuceWebViewTutorial/PluginEditor.h"
+#include <juce_events/juce_events.h>
 #include <optional>
 #include <ranges>
 #include "JuceWebViewTutorial/PluginProcessor.h"
@@ -105,6 +106,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
   };
   addAndMakeVisible(emitJavaScriptEventButton);
 
+  addAndMakeVisible(labelUpdatedFromJavaScript);
+
   setResizable(true, true);
   setSize(800, 600);
 }
@@ -116,6 +119,7 @@ void AudioPluginAudioProcessorEditor::resized() {
   webView.setBounds(bounds.removeFromRight(getWidth() / 2));
   runJavaScriptButton.setBounds(bounds.removeFromTop(50).reduced(5));
   emitJavaScriptEventButton.setBounds(bounds.removeFromTop(50).reduced(5));
+  labelUpdatedFromJavaScript.setBounds(bounds.removeFromTop(50).reduced(5));
 }
 
 auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const
@@ -156,7 +160,9 @@ void AudioPluginAudioProcessorEditor::nativeFunction(
   for (const auto& string : args | transform(&juce::var::toString)) {
     concatenatedString += string;
   }
-  DBG("Native function called with args: " + concatenatedString);
+  labelUpdatedFromJavaScript.setText(
+      "Native function called with args: " + concatenatedString,
+      juce::dontSendNotification);
   completion("nativeFunction callback: All OK!");
 }
 }  // namespace audio_plugin

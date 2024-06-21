@@ -22,6 +22,8 @@ private:
 
   juce::TextButton runJavaScriptButton{"Run some JavaScript"};
   juce::TextButton emitJavaScriptEventButton{"Emit JavaScript event"};
+  juce::Label labelUpdatedFromJavaScript{"label",
+                                         "To be updated from JavaScript"};
 
   AudioPluginAudioProcessor& processorRef;
 
