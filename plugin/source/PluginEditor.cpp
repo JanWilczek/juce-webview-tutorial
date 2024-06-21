@@ -55,26 +55,36 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
     AudioPluginAudioProcessor& p)
     : AudioProcessorEditor(&p),
       processorRef(p),
-      webView{juce::WebBrowserComponent::Options{}
-                  .withBackend(
-                      juce::WebBrowserComponent::Options::Backend::webview2)
-                  .withWinWebView2Options(
-                      juce::WebBrowserComponent::Options::WinWebView2{}
-                          .withBackgroundColour(juce::Colours::white))
-                  .withResourceProvider(
-                      [this](const auto& url) { return getResource(url); })
-                  .withInitialisationData("vendor", JUCE_COMPANY_NAME)
-                  .withInitialisationData("pluginName", JUCE_PRODUCT_NAME)
-                  .withInitialisationData("pluginVersion", JUCE_PRODUCT_VERSION)
-                  .withUserScript("console.log(\"C++ backend here: This is run "
-                                  "before any other loading happens\");")
-                  .withNativeFunction(
-                      juce::Identifier{"nativeFunction"},
-                      [this](const juce::Array<juce::var>& args,
-                             juce::WebBrowserComponent::NativeFunctionCompletion
-                                 completion) {
-                        nativeFunction(args, std::move(completion));
-                      })} {
+      webView{
+          juce::WebBrowserComponent::Options{}
+              .withBackend(
+                  juce::WebBrowserComponent::Options::Backend::webview2)
+              .withWinWebView2Options(
+                  juce::WebBrowserComponent::Options::WinWebView2{}
+                      .withBackgroundColour(juce::Colours::white))
+              .withResourceProvider(
+                  [this](const auto& url) { return getResource(url); })
+              .withInitialisationData("vendor", JUCE_COMPANY_NAME)
+              .withInitialisationData("pluginName", JUCE_PRODUCT_NAME)
+              .withInitialisationData("pluginVersion", JUCE_PRODUCT_VERSION)
+              .withUserScript("console.log(\"C++ backend here: This is run "
+                              "before any other loading happens\");")
+              .withEventListener(
+                  "exampleJavaScriptEvent",
+                  [this](juce::var objectFromFrontend) {
+                    labelUpdatedFromJavaScript.setText(
+                        "example JavaScript event occurred with value " +
+                            objectFromFrontend.getProperty("emittedCount", 0)
+                                .toString(),
+                        juce::dontSendNotification);
+                  })
+              .withNativeFunction(
+                  juce::Identifier{"nativeFunction"},
+                  [this](const juce::Array<juce::var>& args,
+                         juce::WebBrowserComponent::NativeFunctionCompletion
+                             completion) {
+                    nativeFunction(args, std::move(completion));
+                  })} {
   juce::ignoreUnused(processorRef);
 
   addAndMakeVisible(webView);
