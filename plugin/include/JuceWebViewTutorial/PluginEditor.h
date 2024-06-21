@@ -2,6 +2,7 @@
 
 #include "PluginProcessor.h"
 #include "juce_gui_basics/juce_gui_basics.h"
+#include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_gui_extra/juce_gui_extra.h>
 
 namespace audio_plugin {
@@ -26,6 +27,9 @@ private:
                                          "To be updated from JavaScript"};
 
   AudioPluginAudioProcessor& processorRef;
+
+  juce::Slider gainSlider{"gainSlider"};
+  juce::AudioProcessorValueTreeState::SliderAttachment gainSliderAttachment;
 
   juce::WebBrowserComponent webView;
 

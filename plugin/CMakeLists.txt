@@ -15,7 +15,7 @@ juce_add_plugin(${PROJECT_NAME}
     NEEDS_MIDI_OUTPUT FALSE
     PLUGIN_MANUFACTURER_CODE WFSD
     PLUGIN_CODE JWVT
-    FORMATS VST3 Standalone
+    FORMATS AU VST3 Standalone
     PRODUCT_NAME "JuceWebViewTutorial"
     # This will force JUCE to look for the WebView2 NuGet package on Windows
     NEEDS_WEBVIEW2 TRUE

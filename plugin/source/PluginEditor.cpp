@@ -6,6 +6,7 @@
 #include "juce_core/juce_core.h"
 #include "juce_graphics/juce_graphics.h"
 #include "juce_gui_extra/juce_gui_extra.h"
+#include "JuceWebViewTutorial/ParameterIDs.hpp"
 
 namespace audio_plugin {
 namespace {
@@ -55,6 +56,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
     AudioPluginAudioProcessor& p)
     : AudioProcessorEditor(&p),
       processorRef(p),
+      gainSliderAttachment{processorRef.state, id::GAIN.getParamID(),
+                           gainSlider},
       webView{
           juce::WebBrowserComponent::Options{}
               .withBackend(
@@ -118,6 +121,9 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
 
   addAndMakeVisible(labelUpdatedFromJavaScript);
 
+  gainSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
+  addAndMakeVisible(gainSlider);
+
   setResizable(true, true);
   setSize(800, 600);
 }
@@ -130,6 +136,7 @@ void AudioPluginAudioProcessorEditor::resized() {
   runJavaScriptButton.setBounds(bounds.removeFromTop(50).reduced(5));
   emitJavaScriptEventButton.setBounds(bounds.removeFromTop(50).reduced(5));
   labelUpdatedFromJavaScript.setBounds(bounds.removeFromTop(50).reduced(5));
+  gainSlider.setBounds(bounds.removeFromTop(50).reduced(5));
 }
 
 auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const
