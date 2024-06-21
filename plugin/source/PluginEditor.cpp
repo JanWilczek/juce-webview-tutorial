@@ -55,6 +55,7 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
       processorRef(p),
       webView{juce::WebBrowserComponent::Options{}
                   .withBackend(juce::WebBrowserComponent::Options::Backend::webview2)
+    .withWinWebView2Options(juce::WebBrowserComponent::Options::WinWebView2{}.withBackgroundColour(juce::Colours::white))
                   .withResourceProvider(
                       [this](const auto& url) { return getResource(url); })
                   .withInitialisationData("vendor", JUCE_COMPANY_NAME)
