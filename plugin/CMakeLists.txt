@@ -17,6 +17,7 @@ juce_add_plugin(${PROJECT_NAME}
     PLUGIN_CODE JWVT
     FORMATS VST3 Standalone
     PRODUCT_NAME "JuceWebViewTutorial"
+    NEEDS_WEBVIEW2 TRUE
 )
 
 get_target_property(PRODUCT_NAME ${PROJECT_NAME} JUCE_PRODUCT_NAME)
@@ -58,6 +59,7 @@ target_compile_definitions(${PROJECT_NAME}
         JUCE_WEB_BROWSER=1
         JUCE_USE_CURL=0
         JUCE_VST3_CAN_REPLACE_VST2=0
+        JUCE_USE_WIN_WEBVIEW2_WITH_STATIC_LINKING=1
 )
 
 # Enables all warnings and treats warnings as errors.
