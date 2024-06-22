@@ -38,5 +38,14 @@ document.addEventListener("DOMContentLoaded", () => {
   sliderState.valueChangedEvent.addListener(() => {
     slider.value = sliderState.getNormalisedValue();
   });
+
+  const bypassCheckbox = document.getElementById("bypassCheckbox");
+  const bypassToggleState = Juce.getToggleState("BYPASS");
+  bypassCheckbox.oninput = function() {
+    bypassToggleState.setValue(this.checked);
+  }
+  bypassToggleState.valueChangedEvent.addListener(() => {
+    bypassCheckbox.checked = bypassToggleState.getValue();
+  });
 });
 

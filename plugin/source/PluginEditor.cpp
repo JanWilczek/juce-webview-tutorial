@@ -67,6 +67,10 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
       webGainSliderAttachment{
           *processorRef.state.getParameter(id::GAIN.getParamID()), webGainRelay,
           nullptr},
+      webBypassRelay{webView, id::BYPASS.getParamID()},
+      webBypassToggleAttachment{
+          *processorRef.state.getParameter(id::BYPASS.getParamID()),
+          webBypassRelay, nullptr},
       webView{
           juce::WebBrowserComponent::Options{}
               .withBackend(
@@ -97,7 +101,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
                              completion) {
                     nativeFunction(args, std::move(completion));
                   })
-              .withOptionsFrom(webGainRelay)} {
+              .withOptionsFrom(webGainRelay)
+              .withOptionsFrom(webBypassRelay)} {
   juce::ignoreUnused(processorRef);
 
   addAndMakeVisible(webView);
