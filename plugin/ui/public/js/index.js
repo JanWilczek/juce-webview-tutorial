@@ -33,6 +33,10 @@ document.addEventListener("DOMContentLoaded", () => {
     sliderState.setNormalisedValue(this.value);
   }
 
-  slider.step = 1 / (sliderState.properties.numSteps - 1);
+  slider.step = 1 / sliderState.properties.numSteps;
+
+  sliderState.valueChangedEvent.addListener(() => {
+    slider.value = sliderState.getNormalisedValue();
+  });
 });
 
