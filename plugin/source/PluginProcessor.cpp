@@ -2,6 +2,8 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "JuceWebViewTutorial/PluginEditor.h"
 #include "JuceWebViewTutorial/ParameterIDs.hpp"
+#include <cmath>
+#include <functional>
 
 namespace audio_plugin {
 namespace {
@@ -16,7 +18,21 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout() {
       id::BYPASS, "bypass", false,
       AudioParameterBoolAttributes{}.withLabel("Bypass")));
 
+  layout.add(std::make_unique<AudioParameterChoice>(
+      id::DISTORTION_TYPE, "distortion type",
+      StringArray{"none", "tanh(kx)/tanh(k)", "sigmoid"}, 0));
+
   return layout;
+}
+
+void forEachSampleIn(juce::AudioBuffer<float>& buffer,
+                     std::function<void(float&)> function) {
+  for (auto channel = 0; channel < buffer.getNumChannels(); ++channel) {
+    auto channelToWrite = buffer.getWritePointer(channel);
+    for (auto sample = 0; sample < buffer.getNumSamples(); ++sample) {
+      function(channelToWrite[sample]);
+    }
+  }
 }
 }  // namespace
 
@@ -32,7 +48,9 @@ AudioPluginAudioProcessor::AudioPluginAudioProcessor()
               ),
       state{*this, nullptr, "PARAMETERS", createParameterLayout()},
       bypass{dynamic_cast<juce::AudioParameterBool*>(
-          state.getParameter(id::BYPASS.getParamID()))} {
+          state.getParameter(id::BYPASS.getParamID()))},
+      distortionType{dynamic_cast<juce::AudioParameterChoice*>(
+          state.getParameter(id::DISTORTION_TYPE.getParamID()))} {
 }
 
 AudioPluginAudioProcessor::~AudioPluginAudioProcessor() {}
@@ -148,6 +166,21 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 
   if (bypass->get()) {
     return;
+  }
+
+  if (distortionType->getIndex() == 1) {
+    // tanh(kx)/tanh(k)
+    forEachSampleIn(buffer, [](float& sample) {
+      constexpr auto SATURATION = 5.f;
+      static const auto normalizationFactor = std::tanh(SATURATION);
+      sample = std::tanh(SATURATION * sample) / normalizationFactor;
+    });
+  } else if (distortionType->getIndex() == 2) {
+    // sigmoid
+    forEachSampleIn(buffer, [](float& sample) {
+      constexpr auto SATURATION = 5.f;
+      sample = 2.f / (1.f + std::exp(-SATURATION * sample)) - 1.f;
+    });
   }
 
   buffer.applyGain(*state.getRawParameterValue(id::GAIN.getParamID()));

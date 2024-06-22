@@ -63,6 +63,9 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
                            gainSlider},
       bypassButtonAttachment{processorRef.state, id::BYPASS.getParamID(),
                              bypassButton},
+      distortionTypeComboBoxAttachment{processorRef.state,
+                                       id::DISTORTION_TYPE.getParamID(),
+                                       distortionTypeComboBox},
       webGainRelay{webView, id::GAIN.getParamID()},
       webGainSliderAttachment{
           *processorRef.state.getParameter(id::GAIN.getParamID()), webGainRelay,
@@ -144,6 +147,16 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
 
   addAndMakeVisible(bypassButton);
 
+  addAndMakeVisible(distortionTypeLabel);
+
+  const auto distortionTypeParameter =
+      dynamic_cast<juce::AudioParameterChoice*>(
+          processorRef.state.getParameter(id::DISTORTION_TYPE.getParamID()));
+  distortionTypeComboBox.addItemList(distortionTypeParameter->choices, 1);
+  distortionTypeComboBox.setSelectedItemIndex(
+      distortionTypeParameter->getIndex(), juce::dontSendNotification);
+  addAndMakeVisible(distortionTypeComboBox);
+
   setResizable(true, true);
   setSize(800, 600);
 }
@@ -158,6 +171,8 @@ void AudioPluginAudioProcessorEditor::resized() {
   labelUpdatedFromJavaScript.setBounds(bounds.removeFromTop(50).reduced(5));
   gainSlider.setBounds(bounds.removeFromTop(50).reduced(5));
   bypassButton.setBounds(bounds.removeFromTop(50).reduced(10));
+  distortionTypeLabel.setBounds(bounds.removeFromTop(50).reduced(5));
+  distortionTypeComboBox.setBounds(bounds.removeFromTop(50).reduced(5));
 }
 
 auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const

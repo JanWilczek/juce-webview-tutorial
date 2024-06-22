@@ -28,11 +28,16 @@ private:
 
   AudioPluginAudioProcessor& processorRef;
 
-  juce::Slider gainSlider{"gainSlider"};
+  juce::Slider gainSlider{"gain slider"};
   juce::AudioProcessorValueTreeState::SliderAttachment gainSliderAttachment;
 
   juce::ToggleButton bypassButton{"Bypass"};
   juce::AudioProcessorValueTreeState::ButtonAttachment bypassButtonAttachment;
+
+  juce::Label distortionTypeLabel{"distortion type label", "Distortion"};
+  juce::ComboBox distortionTypeComboBox{"distortion type combo box"};
+  juce::AudioProcessorValueTreeState::ComboBoxAttachment
+      distortionTypeComboBoxAttachment;
 
   juce::WebSliderRelay webGainRelay;
   juce::WebSliderParameterAttachment webGainSliderAttachment;
