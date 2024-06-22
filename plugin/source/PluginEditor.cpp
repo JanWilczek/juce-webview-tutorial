@@ -51,6 +51,8 @@ juce::Identifier getExampleEventId() {
   static const juce::Identifier id{"exampleevent"};
   return id;
 }
+
+constexpr auto LOCAL_DEV_SERVER_ADDRESS = "http://127.0.0.1:8080";
 }  // namespace
 
 AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
@@ -102,7 +104,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
   // webView.goToURL("https://juce.com");
 
   // This is necessary if we want to use a ResourceProvider
-  webView.goToURL(webView.getResourceProviderRoot());
+  // webView.goToURL(webView.getResourceProviderRoot());
+  webView.goToURL(LOCAL_DEV_SERVER_ADDRESS);
 
   runJavaScriptButton.onClick = [this] {
     constexpr auto JAVASCRIPT_TO_RUN{"console.log(\"Hello from C++!\")"};
