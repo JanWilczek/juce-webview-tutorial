@@ -28,9 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const slider = document.getElementById("gainSlider");
+  const sliderState = Juce.getSliderState("GAIN");
   slider.oninput = function() {
-    const sliderState = Juce.getSliderState("GAIN");
     sliderState.setNormalisedValue(this.value);
   }
+
+  slider.step = 1 / (sliderState.properties.numSteps - 1);
 });
 
