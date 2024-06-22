@@ -105,6 +105,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
 
   // This is necessary if we want to use a ResourceProvider
   // webView.goToURL(webView.getResourceProviderRoot());
+
+  // This can be used for hot reloading
   webView.goToURL(LOCAL_DEV_SERVER_ADDRESS);
 
   runJavaScriptButton.onClick = [this] {
