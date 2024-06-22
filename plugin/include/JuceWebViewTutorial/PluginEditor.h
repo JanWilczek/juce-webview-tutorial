@@ -43,6 +43,8 @@ private:
   juce::WebSliderParameterAttachment webGainSliderAttachment;
   juce::WebToggleButtonRelay webBypassRelay;
   juce::WebToggleButtonParameterAttachment webBypassToggleAttachment;
+  juce::WebComboBoxRelay webDistortionTypeRelay;
+  juce::WebComboBoxParameterAttachment webDistortionTypeComboBoxAttachment;
   juce::WebBrowserComponent webView;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginAudioProcessorEditor)

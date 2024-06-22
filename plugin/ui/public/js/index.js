@@ -47,5 +47,12 @@ document.addEventListener("DOMContentLoaded", () => {
   bypassToggleState.valueChangedEvent.addListener(() => {
     bypassCheckbox.checked = bypassToggleState.getValue();
   });
+
+  const distortionTypeComboBox = document.getElementById("distortionTypeComboBox");
+  const distortionTypeComboBoxState = Juce.getComboBoxState("distortionTypeComboBox");
+  distortionTypeComboBoxState.properties.choices.forEach(choice => {
+    distortionTypeComboBox.innerHTML += `<option value=\"${choice}\">${choice}</option>`;
+  });
+
 });
 

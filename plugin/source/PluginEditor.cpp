@@ -74,6 +74,10 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
       webBypassToggleAttachment{
           *processorRef.state.getParameter(id::BYPASS.getParamID()),
           webBypassRelay, nullptr},
+      webDistortionTypeRelay{webView, "distortionTypeComboBox"},
+      webDistortionTypeComboBoxAttachment{
+          *processorRef.state.getParameter(id::DISTORTION_TYPE.getParamID()),
+          webDistortionTypeRelay, nullptr},
       webView{
           juce::WebBrowserComponent::Options{}
               .withBackend(
@@ -105,7 +109,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
                     nativeFunction(args, std::move(completion));
                   })
               .withOptionsFrom(webGainRelay)
-              .withOptionsFrom(webBypassRelay)} {
+              .withOptionsFrom(webBypassRelay)
+              .withOptionsFrom(webDistortionTypeRelay)} {
   juce::ignoreUnused(processorRef);
 
   addAndMakeVisible(webView);
