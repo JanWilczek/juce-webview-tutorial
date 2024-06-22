@@ -31,6 +31,9 @@ private:
   juce::Slider gainSlider{"gainSlider"};
   juce::AudioProcessorValueTreeState::SliderAttachment gainSliderAttachment;
 
+  juce::ToggleButton bypassButton{"Bypass"};
+  juce::AudioProcessorValueTreeState::ButtonAttachment bypassButtonAttachment;
+
   juce::WebSliderRelay webGainRelay;
   juce::WebSliderParameterAttachment webGainSliderAttachment;
   juce::WebBrowserComponent webView;

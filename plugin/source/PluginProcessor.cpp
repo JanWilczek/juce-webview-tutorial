@@ -12,6 +12,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout() {
   layout.add(std::make_unique<AudioParameterFloat>(
       id::GAIN, "gain", NormalisableRange<float>{0.f, 1.f, 0.01f, 0.9f}, 1.f));
 
+  layout.add(std::make_unique<AudioParameterBool>(
+      id::BYPASS, "bypass", false,
+      AudioParameterBoolAttributes{}.withLabel("Bypass")));
+
   return layout;
 }
 }  // namespace
@@ -26,7 +30,9 @@ AudioPluginAudioProcessor::AudioPluginAudioProcessor()
               .withOutput("Output", juce::AudioChannelSet::stereo(), true)
 #endif
               ),
-      state{*this, nullptr, "PARAMETERS", createParameterLayout()} {
+      state{*this, nullptr, "PARAMETERS", createParameterLayout()},
+      bypass{dynamic_cast<juce::AudioParameterBool*>(
+          state.getParameter(id::BYPASS.getParamID()))} {
 }
 
 AudioPluginAudioProcessor::~AudioPluginAudioProcessor() {}
@@ -139,6 +145,10 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   // this code if your algorithm always overwrites all the output channels.
   for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
     buffer.clear(i, 0, buffer.getNumSamples());
+
+  if (bypass->get()) {
+    return;
+  }
 
   buffer.applyGain(*state.getRawParameterValue(id::GAIN.getParamID()));
 }

@@ -61,6 +61,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
       processorRef(p),
       gainSliderAttachment{processorRef.state, id::GAIN.getParamID(),
                            gainSlider},
+      bypassButtonAttachment{processorRef.state, id::BYPASS.getParamID(),
+                             bypassButton},
       webGainRelay{webView, id::GAIN.getParamID()},
       webGainSliderAttachment{
           *processorRef.state.getParameter(id::GAIN.getParamID()), webGainRelay,
@@ -135,6 +137,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
   gainSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
   addAndMakeVisible(gainSlider);
 
+  addAndMakeVisible(bypassButton);
+
   setResizable(true, true);
   setSize(800, 600);
 }
@@ -148,6 +152,7 @@ void AudioPluginAudioProcessorEditor::resized() {
   emitJavaScriptEventButton.setBounds(bounds.removeFromTop(50).reduced(5));
   labelUpdatedFromJavaScript.setBounds(bounds.removeFromTop(50).reduced(5));
   gainSlider.setBounds(bounds.removeFromTop(50).reduced(5));
+  bypassButton.setBounds(bounds.removeFromTop(50).reduced(10));
 }
 
 auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const
