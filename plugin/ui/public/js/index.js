@@ -55,5 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
       distortionTypeComboBox.innerHTML += `<option value=\"${choice}\">${choice}</option>`;
     });
   });
+  distortionTypeComboBoxState.valueChangedEvent.addListener(() => {
+    distortionTypeComboBox.selectedIndex = distortionTypeComboBoxState.getChoiceIndex();
+  });
+  distortionTypeComboBox.oninput = function() {
+    distortionTypeComboBoxState.setChoiceIndex(this.selectedIndex);
+  }
 });
 
