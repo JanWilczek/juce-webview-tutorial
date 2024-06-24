@@ -17,16 +17,16 @@ After cloning the repo locally, you can proceed with the usual CMake workflow.
 In the main repo directory execute
 
 ```bash
-$ cmake -S . -B build
-$ cmake --build build
+cmake -S . -B build
+cmake --build build
 ```
 
 Alternatively, you can use bundled CMake presets:
 
 ```bash
-$ cmake --preset default # uses the Ninja build system
-$ cmake --build build
-$ ctest --preset default
+cmake --preset default # uses the Ninja build system
+cmake --build build
+ctest --preset default
 ```
 
 Existing presets are `default`, `release`, `vs` (for Visual Studio), and `Xcode`.
