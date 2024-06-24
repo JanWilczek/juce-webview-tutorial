@@ -50,9 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const distortionTypeComboBox = document.getElementById("distortionTypeComboBox");
   const distortionTypeComboBoxState = Juce.getComboBoxState("distortionTypeComboBox");
-  distortionTypeComboBoxState.properties.choices.forEach(choice => {
-    distortionTypeComboBox.innerHTML += `<option value=\"${choice}\">${choice}</option>`;
+  distortionTypeComboBoxState.propertiesChangedEvent.addListener(() => {
+    distortionTypeComboBoxState.properties.choices.forEach(choice => {
+      distortionTypeComboBox.innerHTML += `<option value=\"${choice}\">${choice}</option>`;
+    });
   });
-
 });
 
