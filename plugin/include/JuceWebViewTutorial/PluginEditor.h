@@ -7,7 +7,8 @@
 
 namespace audio_plugin {
 
-class AudioPluginAudioProcessorEditor : public juce::AudioProcessorEditor, private juce::Timer {
+class AudioPluginAudioProcessorEditor : public juce::AudioProcessorEditor,
+                                        private juce::Timer {
 public:
   explicit AudioPluginAudioProcessorEditor(AudioPluginAudioProcessor&);
   ~AudioPluginAudioProcessorEditor() override;
