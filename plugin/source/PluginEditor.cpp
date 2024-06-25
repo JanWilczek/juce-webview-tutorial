@@ -88,6 +88,7 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
                       // this may be necessary for some DAWs; include for safety
                       .withUserDataFolder(juce::File::getSpecialLocation(
                           juce::File::SpecialLocationType::tempDirectory)))
+              .withNativeIntegrationEnabled()
               .withResourceProvider(
                   [this](const auto& url) { return getResource(url); },
                   // allowedOriginIn parameter is necessary to
