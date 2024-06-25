@@ -121,8 +121,8 @@ void AudioPluginAudioProcessor::prepareToPlay(double sampleRate,
       .maximumBlockSize = static_cast<uint32>(samplesPerBlock),
       .numChannels = static_cast<uint32>(getTotalNumOutputChannels())
     });
-  envelopeFollower.setAttackTime(5.f);
-  envelopeFollower.setReleaseTime(10.f);
+  envelopeFollower.setAttackTime(100.f);
+  envelopeFollower.setReleaseTime(100.f);
   envelopeFollower.setLevelCalculationType(dsp::BallisticsFilter<float>::LevelCalculationType::peak);
 
   envelopeFollowerOutputBuffer.setSize(getTotalNumOutputChannels(), samplesPerBlock);
@@ -198,7 +198,7 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   const auto inBlock = juce::dsp::AudioBlock<float>{buffer}.getSubsetChannelBlock(0u, getTotalNumOutputChannels());
   auto outBlock = juce::dsp::AudioBlock<float>{envelopeFollowerOutputBuffer};
   envelopeFollower.process(juce::dsp::ProcessContextNonReplacing<float>{inBlock, outBlock});
-  outputLevelLeft = outBlock.getSample(0, static_cast<int>(outBlock.getNumSamples()) - 1);
+  outputLevelLeft = juce::Decibels::gainToDecibels(outBlock.getSample(0, static_cast<int>(outBlock.getNumSamples()) - 1));
 }
 
 bool AudioPluginAudioProcessor::hasEditor() const {
