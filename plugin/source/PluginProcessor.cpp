@@ -121,8 +121,8 @@ void AudioPluginAudioProcessor::prepareToPlay(double sampleRate,
       .maximumBlockSize = static_cast<uint32>(samplesPerBlock),
       .numChannels = static_cast<uint32>(getTotalNumOutputChannels())
     });
-  envelopeFollower.setAttackTime(100.f);
-  envelopeFollower.setReleaseTime(100.f);
+  envelopeFollower.setAttackTime(200.f);
+  envelopeFollower.setReleaseTime(200.f);
   envelopeFollower.setLevelCalculationType(dsp::BallisticsFilter<float>::LevelCalculationType::peak);
 
   envelopeFollowerOutputBuffer.setSize(getTotalNumOutputChannels(), samplesPerBlock);
