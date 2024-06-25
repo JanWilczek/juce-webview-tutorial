@@ -1,4 +1,3 @@
-
 # Mandatory line, sets the minimum version of CMake that should be used with this repository.
 # I specified 3.22 because I trust it. However, currently I have 3.26 installed on my machine.
 # To verify your version run
@@ -28,18 +27,6 @@ CPMAddPackage(
     SOURCE_DIR ${LIB_DIR}/juce
 )
 
-# Adds googletest.
-CPMAddPackage(
-    NAME GOOGLETEST
-    GITHUB_REPOSITORY google/googletest
-    GIT_TAG v1.14.0
-    VERSION 1.14.0
-    SOURCE_DIR ${LIB_DIR}/googletest
-    OPTIONS
-        "INSTALL_GTEST OFF"
-        "gtest_force_shared_crt ON"
-)
-
 # Install Microsoft.Web.WebView2 NuGet package to allow WebViews on Windows
 if (MSVC)
   message(STATUS "Setting up WebView dependencies")
@@ -60,11 +47,6 @@ else()
 set(CXX_PROJECT_WARNINGS "-Wall;-Wextra;-Wpedantic")
 endif()
 
-# This command allows running tests from the "build" folder (the one where CMake generates the project to).
-enable_testing()
-
 # Adds all the targets configured in the "plugin" folder.
 add_subdirectory(plugin)
 
-# Adds all the targets configured in the "test" folder.
-add_subdirectory(test)
