@@ -1,6 +1,7 @@
 #pragma once
 
 #include <juce_audio_processors/juce_audio_processors.h>
+#include <juce_dsp/juce_dsp.h>
 
 namespace audio_plugin {
 class AudioPluginAudioProcessor : public juce::AudioProcessor {
@@ -36,11 +37,15 @@ public:
   void setStateInformation(const void* data, int sizeInBytes) override;
 
   juce::AudioProcessorValueTreeState state;
+  std::atomic<float> outputLevelLeft;
 
 private:
   std::atomic<float>* gain{nullptr};
   juce::AudioParameterBool* bypass{nullptr};
   juce::AudioParameterChoice* distortionType{nullptr};
+
+  juce::dsp::BallisticsFilter<float> envelopeFollower;
+  juce::AudioBuffer<float> envelopeFollowerOutputBuffer;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginAudioProcessor)
 };
