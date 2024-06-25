@@ -42,9 +42,9 @@ endif()
 # Enables strict warnings and treats warnings as errors.
 # This needs to be set up only for your projects, not 3rd party
 if (MSVC)
-set(CXX_PROJECT_WARNINGS "/W4;/WX;/wd4820;/wd4514")
+  set(CXX_PROJECT_WARNINGS "/W4;/WX;/wd4820;/wd4514")
 else()
-set(CXX_PROJECT_WARNINGS "-Wall;-Wextra;-Wpedantic")
+  set(CXX_PROJECT_WARNINGS "-Wall;-Werror;-Wextra;-Wpedantic")
 endif()
 
 # Adds all the targets configured in the "plugin" folder.
