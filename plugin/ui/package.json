@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "cpx": "^1.5.0",
+    "http-server": "^14.1.1"
+  },
+  "scripts": {
+    "copy-plotly": "cpx ./node_modules/plotly.js-dist/* ./public/js/libs/plotly.js-dist",
+    "start": "http-server ./public"
+  },
+  "dependencies": {
+    "plotly.js-dist": "^2.33.0"
+  }
+}
