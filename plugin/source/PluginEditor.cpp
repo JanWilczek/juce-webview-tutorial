@@ -84,7 +84,10 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
                   juce::WebBrowserComponent::Options::Backend::webview2)
               .withWinWebView2Options(
                   juce::WebBrowserComponent::Options::WinWebView2{}
-                      .withBackgroundColour(juce::Colours::white))
+                      .withBackgroundColour(juce::Colours::white)
+                      // this may be necessary for some DAWs; include for safety
+                      .withUserDataFolder(juce::File::getSpecialLocation(
+                          juce::File::SpecialLocationType::tempDirectory)))
               .withResourceProvider(
                   [this](const auto& url) { return getResource(url); },
                   // allowedOriginIn parameter is necessary to
@@ -213,8 +216,10 @@ auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const
     juce::DynamicObject::Ptr levelData{new juce::DynamicObject{}};
     levelData->setProperty("left", processorRef.outputLevelLeft.load());
     const auto jsonString = juce::JSON::toString(levelData.get());
-    juce::MemoryInputStream stream{jsonString.getCharPointer(), jsonString.getNumBytesAsUTF8(), false};
-    return juce::WebBrowserComponent::Resource{streamToVector(stream), juce::String{"application/json"}};
+    juce::MemoryInputStream stream{jsonString.getCharPointer(),
+                                   jsonString.getNumBytesAsUTF8(), false};
+    return juce::WebBrowserComponent::Resource{
+        streamToVector(stream), juce::String{"application/json"}};
   }
 
   const auto resource =
