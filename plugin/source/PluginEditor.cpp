@@ -86,7 +86,11 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
                   juce::WebBrowserComponent::Options::WinWebView2{}
                       .withBackgroundColour(juce::Colours::white))
               .withResourceProvider(
-                  [this](const auto& url) { return getResource(url); })
+                  [this](const auto& url) { return getResource(url); },
+                  // allowedOriginIn parameter is necessary to
+                  // retrieve resources from the C++ backend even if
+                  // on live server
+                  juce::URL{LOCAL_DEV_SERVER_ADDRESS}.getOrigin())
               .withInitialisationData("vendor", JUCE_COMPANY_NAME)
               .withInitialisationData("pluginName", JUCE_PRODUCT_NAME)
               .withInitialisationData("pluginVersion", JUCE_PRODUCT_VERSION)
@@ -164,6 +168,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
 
   setResizable(true, true);
   setSize(800, 600);
+
+  startTimer(60);
 }
 
 AudioPluginAudioProcessorEditor::~AudioPluginAudioProcessorEditor() {}
@@ -178,6 +184,10 @@ void AudioPluginAudioProcessorEditor::resized() {
   bypassButton.setBounds(bounds.removeFromTop(50).reduced(10));
   distortionTypeLabel.setBounds(bounds.removeFromTop(50).reduced(5));
   distortionTypeComboBox.setBounds(bounds.removeFromTop(50).reduced(5));
+}
+
+void AudioPluginAudioProcessorEditor::timerCallback() {
+  webView.emitEventIfBrowserIsVisible("outputLevel", juce::var{});
 }
 
 auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const
@@ -198,6 +208,14 @@ auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const
 
   const auto resourceToRetrieve =
       url == "/" ? "index.html" : url.fromFirstOccurrenceOf("/", false, false);
+
+  if (resourceToRetrieve == "outputLevel.json") {
+    juce::DynamicObject::Ptr levelData{new juce::DynamicObject{}};
+    levelData->setProperty("left", processorRef.outputLevelLeft.load());
+    const auto jsonString = juce::JSON::toString(levelData.get());
+    juce::MemoryInputStream stream{jsonString.getCharPointer(), jsonString.getNumBytesAsUTF8(), false};
+    return juce::WebBrowserComponent::Resource{streamToVector(stream), juce::String{"application/json"}};
+  }
 
   const auto resource =
       resourceFilesRoot.getChildFile(resourceToRetrieve).createInputStream();
