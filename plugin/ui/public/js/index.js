@@ -75,8 +75,44 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Plot with Plotly
-  Plotly.newPlot("gd", /* JSON object */ {
-    "data": [{ "y": [1, 2, 3] }],
-    "layout": { "width": 600, "height": 400}
+  Plotly.newPlot("outputLevelPlot", {
+    data: [
+      {
+        x: ["left"],
+        y: [-60],
+        base: [-60],
+        type: "bar",
+      },
+    ],
+    layout: { width: 200, height: 400, yaxis: { range: [-60, 0] } },
+  });
+
+  window.__JUCE__.backend.addEventListener("outputLevel", () => {
+    fetch(Juce.getBackendResourceAddress("outputLevel.json"))
+      .then((response) => response.text())
+      .then((outputLevel) => {
+        const levelData = JSON.parse(outputLevel);
+        Plotly.animate(
+          "outputLevelPlot",
+          {
+            data: [
+              {
+                y: [levelData.left + 60],
+              },
+            ],
+            traces: [0],
+            layout: {},
+          },
+          {
+            transition: {
+              duration: 20,
+              easing: "cubic-in-out",
+            },
+            frame: {
+              duration: 20,
+            },
+          }
+        );
+      });
   });
 });
