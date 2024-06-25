@@ -40,3 +40,8 @@ pre-commit install
 ```
 
 (for this you may need to install `pre-commit` with `pip`: `pip install pre-commit`).
+
+## 📜 License
+
+This project is licensed under the AGPLv3 license according to the JUCE licensing terms.
+

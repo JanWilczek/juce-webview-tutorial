@@ -47,6 +47,7 @@ AudioPluginAudioProcessor::AudioPluginAudioProcessor()
 #endif
               ),
       state{*this, nullptr, "PARAMETERS", createParameterLayout()},
+      gain{state.getRawParameterValue(id::GAIN.getParamID())},
       bypass{dynamic_cast<juce::AudioParameterBool*>(
           state.getParameter(id::BYPASS.getParamID()))},
       distortionType{dynamic_cast<juce::AudioParameterChoice*>(
@@ -113,9 +114,19 @@ void AudioPluginAudioProcessor::changeProgramName(int index,
 
 void AudioPluginAudioProcessor::prepareToPlay(double sampleRate,
                                               int samplesPerBlock) {
-  // Use this method as the place to do any pre-playback
-  // initialisation that you need..
-  juce::ignoreUnused(sampleRate, samplesPerBlock);
+  using namespace juce;
+
+  envelopeFollower.prepare(dsp::ProcessSpec{
+      .sampleRate = sampleRate,
+      .maximumBlockSize = static_cast<uint32>(samplesPerBlock),
+      .numChannels = static_cast<uint32>(getTotalNumOutputChannels())});
+  envelopeFollower.setAttackTime(200.f);
+  envelopeFollower.setReleaseTime(200.f);
+  envelopeFollower.setLevelCalculationType(
+      dsp::BallisticsFilter<float>::LevelCalculationType::peak);
+
+  envelopeFollowerOutputBuffer.setSize(getTotalNumOutputChannels(),
+                                       samplesPerBlock);
 }
 
 void AudioPluginAudioProcessor::releaseResources() {
@@ -164,7 +175,7 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
     buffer.clear(i, 0, buffer.getNumSamples());
 
-  if (bypass->get()) {
+  if (bypass->get() || buffer.getNumSamples() == 0) {
     return;
   }
 
@@ -183,7 +194,16 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     });
   }
 
-  buffer.applyGain(*state.getRawParameterValue(id::GAIN.getParamID()));
+  buffer.applyGain(*gain);
+
+  const auto inBlock =
+      juce::dsp::AudioBlock<float>{buffer}.getSubsetChannelBlock(
+          0u, getTotalNumOutputChannels());
+  auto outBlock = juce::dsp::AudioBlock<float>{envelopeFollowerOutputBuffer};
+  envelopeFollower.process(
+      juce::dsp::ProcessContextNonReplacing<float>{inBlock, outBlock});
+  outputLevelLeft = juce::Decibels::gainToDecibels(
+      outBlock.getSample(0, static_cast<int>(outBlock.getNumSamples()) - 1));
 }
 
 bool AudioPluginAudioProcessor::hasEditor() const {
