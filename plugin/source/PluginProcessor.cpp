@@ -47,6 +47,7 @@ AudioPluginAudioProcessor::AudioPluginAudioProcessor()
 #endif
               ),
       state{*this, nullptr, "PARAMETERS", createParameterLayout()},
+      gain{state.getRawParameterValue(id::GAIN.getParamID())},
       bypass{dynamic_cast<juce::AudioParameterBool*>(
           state.getParameter(id::BYPASS.getParamID()))},
       distortionType{dynamic_cast<juce::AudioParameterChoice*>(
@@ -183,7 +184,7 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     });
   }
 
-  buffer.applyGain(*state.getRawParameterValue(id::GAIN.getParamID()));
+  buffer.applyGain(*gain);
 }
 
 bool AudioPluginAudioProcessor::hasEditor() const {

@@ -38,6 +38,7 @@ public:
   juce::AudioProcessorValueTreeState state;
 
 private:
+  std::atomic<float>* gain{nullptr};
   juce::AudioParameterBool* bypass{nullptr};
   juce::AudioParameterChoice* distortionType{nullptr};
 
