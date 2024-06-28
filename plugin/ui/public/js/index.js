@@ -3,7 +3,7 @@ import * as Juce from "./juce/index.js";
 console.log("JUCE frontend library successfully imported");
 
 window.__JUCE__.backend.addEventListener(
-  "exampleevent",
+  "exampleEvent",
   (objectFromBackend) => {
     console.log(objectFromBackend);
   }

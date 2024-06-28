@@ -48,7 +48,7 @@ static const char* getMimeForExtension(const juce::String& extension) {
 }
 
 juce::Identifier getExampleEventId() {
-  static const juce::Identifier id{"exampleevent"};
+  static const juce::Identifier id{"exampleEvent"};
   return id;
 }
 
