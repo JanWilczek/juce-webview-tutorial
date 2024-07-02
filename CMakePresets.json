@@ -38,34 +38,18 @@
     {
       "name": "default",
       "configurePreset": "default"
-    }
-  ],
-  "testPresets": [
-    {
-      "name": "default",
-      "configurePreset": "default",
-      "output": { "outputOnFailure": true },
-      "execution": {
-        "noTestsAction": "error",
-        "stopOnFailure": false
-      }
     },
     {
       "name": "release",
-      "inherits": "default",
       "configurePreset": "release"
     },
     {
       "name": "vs",
-      "inherits": "default",
       "configurePreset": "vs"
     },
     {
       "name": "Xcode",
-      "inherits": "default",
-      "configurePreset": "Xcode",
-      // Use Debug by default
-      "configuration": "Debug"
+      "configurePreset": "Xcode"
     }
   ]
 }
