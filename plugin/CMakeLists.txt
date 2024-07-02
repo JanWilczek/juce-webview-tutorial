@@ -3,10 +3,6 @@ cmake_minimum_required(VERSION 3.22)
 # Version is needed by JUCE.
 project(AudioPlugin VERSION 0.1.0)
 
-# Adding a directory with the library/application name as a subfolder of the
-# include folder is a good practice. It helps avoid name clashes later on.
-set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/JuceWebViewTutorial")
-
 # Adds a plugin target (that's basically what the Projucer does).
 juce_add_plugin(${PROJECT_NAME}
     COMPANY_NAME WolfSound
@@ -32,6 +28,10 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 set(SOURCES
         source/PluginEditor.cpp
         source/PluginProcessor.cpp)
+
+# Adding a directory with the library/application name as a subfolder of the
+# include folder is a good practice. It helps avoid name clashes later on.
+set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/JuceWebViewTutorial")
 
 target_sources(${PROJECT_NAME}
     PRIVATE
@@ -82,7 +82,7 @@ set(UI_FILES_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ui/public")
 # Copy JUCE frontend library to plugin UI files
 file(COPY "${JUCE_MODULES_DIR}/juce_gui_extra/native/javascript/" DESTINATION "${UI_FILES_SOURCE_DIR}/js/juce/")
 
-# Copy WebView UI files
+# Copy WebView UI files; does not allow hot reloading
 get_target_property(PLUGIN_OUTPUT_DIR ${PROJECT_NAME} RUNTIME_OUTPUT_DIRECTORY)
 set(UI_FILES_DEST_DIR "${PLUGIN_OUTPUT_DIR}/public")
 
