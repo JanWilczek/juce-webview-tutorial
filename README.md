@@ -10,28 +10,31 @@
 
 Welcome to the JUCE 8 WebView UI Plugin Tutorial! This repository accompanies a video tutorial series on creating a WebView UI plugin using JUCE 8.
 
+Feel free to use this project as a starting point for your own projects. For this, you can click "Use this template" button at the top of this page.
+
 ## 🚀 Getting Started
+
+This repository uses CMake. It takes care of all the dependencies using [CPM](https://github.com/cpm-cmake/CPM.cmake).
 
 After cloning the repo locally, you can proceed with the usual CMake workflow.
 
-In the main repo directory execute
-
-```bash
-cmake -S . -B build
-cmake --build build
-```
-
-Alternatively, you can use bundled CMake presets:
+To generate project files execute in the main repo directory
 
 ```bash
 cmake --preset default # uses the Ninja build system
-cmake --build build
-ctest --preset default
 ```
 
-Existing presets are `default`, `release`, `vs` (for Visual Studio), and `Xcode`.
+Existing presets are `default`, `release`, `vs` (for Visual Studio), and `Xcode`. Check out _CMakePresets.json_ for details.
 
-The first run will take the most time because the dependencies (CPM, JUCE, and googletest) need to be downloaded.
+The first run will take the most time because the dependencies (CPM and JUCE) need to be downloaded.
+
+To build the project execute in the main repo directory
+
+```bash
+cmake --build --preset default # or release, vs, or Xcode
+```
+
+### Additional setup
 
 To run clang-format on every commit, in the main directory execute
 
@@ -39,7 +42,7 @@ To run clang-format on every commit, in the main directory execute
 pre-commit install
 ```
 
-(for this you may need to install `pre-commit` with `pip`: `pip install pre-commit`).
+(for this, you may need to install `pre-commit` with `pip`: `pip install pre-commit`).
 
 ## 📜 License
 
