@@ -133,7 +133,7 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
   webView.goToURL(LOCAL_DEV_SERVER_ADDRESS);
 
   runJavaScriptButton.onClick = [this] {
-    constexpr auto JAVASCRIPT_TO_RUN{"console.log(\"Hello from C++!\")"};
+    constexpr auto JAVASCRIPT_TO_RUN{"console.log(\"Hello from C++!\");"};
     webView.evaluateJavascript(
         JAVASCRIPT_TO_RUN,
         [](juce::WebBrowserComponent::EvaluationResult result) {
