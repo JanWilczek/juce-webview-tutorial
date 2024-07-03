@@ -46,5 +46,5 @@ pre-commit install
 
 ## 📜 License
 
-This project is licensed under the AGPLv3 license according to the JUCE licensing terms.
+This project is licensed under the MIT license. Check out the [LICENSE.md](LICENSE.md) file for details.
 
