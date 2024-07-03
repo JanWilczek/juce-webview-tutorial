@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 # Version is needed by JUCE.
-project(AudioPlugin VERSION 0.1.0)
+project(JuceWebViewPlugin VERSION 0.1.0)
 
 # Adds a plugin target (that's basically what the Projucer does).
 juce_add_plugin(${PROJECT_NAME}
@@ -12,7 +12,7 @@ juce_add_plugin(${PROJECT_NAME}
     PLUGIN_MANUFACTURER_CODE WFSD
     PLUGIN_CODE JWVT
     FORMATS AU VST3 Standalone
-    PRODUCT_NAME "JuceWebViewTutorial"
+    PRODUCT_NAME "JuceWebViewPlugin"
     # This will force JUCE to look for the WebView2 NuGet package on Windows
     NEEDS_WEBVIEW2 TRUE
 )
