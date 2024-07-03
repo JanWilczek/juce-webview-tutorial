@@ -138,10 +138,11 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
         JAVASCRIPT_TO_RUN,
         [](juce::WebBrowserComponent::EvaluationResult result) {
           if (const auto* resultPtr = result.getResult()) {
-            DBG("JavaScript evaluation result: " + resultPtr->toString());
+            std::cout << "JavaScript evaluation result: "
+                      << resultPtr->toString() << std::endl;
           } else {
-            DBG("JavaScript evaluation failed because " +
-                result.getError()->message);
+            std::cout << "JavaScript evaluation failed because "
+                      << result.getError()->message << std::endl;
           }
         });
   };
@@ -196,7 +197,7 @@ void AudioPluginAudioProcessorEditor::timerCallback() {
 
 auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const
     -> std::optional<Resource> {
-  DBG("ResourceProvider called with " + url);
+  std::cout << "ResourceProvider called with " << url << std::endl;
 
   static const auto resourceFilesRoot =
       juce::File::getSpecialLocation(
@@ -206,7 +207,8 @@ auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const
           .getChildFile("public");
 
   [[maybe_unused]] static auto printRootOnce = [] {
-    DBG("Resource files root is " + resourceFilesRoot.getFullPathName());
+    std::cout << "Resource files root is "
+              << resourceFilesRoot.getFullPathName() << std::endl;
     return true;
   }();
 
