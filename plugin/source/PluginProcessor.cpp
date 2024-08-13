@@ -199,7 +199,9 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   const auto inBlock =
       juce::dsp::AudioBlock<float>{buffer}.getSubsetChannelBlock(
           0u, static_cast<size_t>(getTotalNumOutputChannels()));
-  auto outBlock = juce::dsp::AudioBlock<float>{envelopeFollowerOutputBuffer};
+  auto outBlock =
+      juce::dsp::AudioBlock<float>{envelopeFollowerOutputBuffer}.getSubBlock(
+          0u, static_cast<size_t>(buffer.getNumSamples()));
   envelopeFollower.process(
       juce::dsp::ProcessContextNonReplacing<float>{inBlock, outBlock});
   outputLevelLeft = juce::Decibels::gainToDecibels(
