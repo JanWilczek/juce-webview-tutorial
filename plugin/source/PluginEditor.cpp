@@ -119,8 +119,6 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
       webDistortionTypeComboBoxAttachment{
           *processorRef.state.getParameter(id::DISTORTION_TYPE.getParamID()),
           webDistortionTypeRelay, nullptr} {
-  juce::ignoreUnused(processorRef);
-
   addAndMakeVisible(webView);
 
   // WebBrowserComponent can display any URL
