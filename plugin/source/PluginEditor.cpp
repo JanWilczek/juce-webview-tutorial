@@ -67,17 +67,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
                                        id::DISTORTION_TYPE.getParamID(),
                                        distortionTypeComboBox},
       webGainRelay{webView, id::GAIN.getParamID()},
-      webGainSliderAttachment{
-          *processorRef.state.getParameter(id::GAIN.getParamID()), webGainRelay,
-          nullptr},
       webBypassRelay{webView, id::BYPASS.getParamID()},
-      webBypassToggleAttachment{
-          *processorRef.state.getParameter(id::BYPASS.getParamID()),
-          webBypassRelay, nullptr},
       webDistortionTypeRelay{webView, "distortionTypeComboBox"},
-      webDistortionTypeComboBoxAttachment{
-          *processorRef.state.getParameter(id::DISTORTION_TYPE.getParamID()),
-          webDistortionTypeRelay, nullptr},
       webView{
           juce::WebBrowserComponent::Options{}
               .withBackend(
@@ -118,7 +109,16 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
                   })
               .withOptionsFrom(webGainRelay)
               .withOptionsFrom(webBypassRelay)
-              .withOptionsFrom(webDistortionTypeRelay)} {
+              .withOptionsFrom(webDistortionTypeRelay)},
+      webGainSliderAttachment{
+          *processorRef.state.getParameter(id::GAIN.getParamID()), webGainRelay,
+          nullptr},
+      webBypassToggleAttachment{
+          *processorRef.state.getParameter(id::BYPASS.getParamID()),
+          webBypassRelay, nullptr},
+      webDistortionTypeComboBoxAttachment{
+          *processorRef.state.getParameter(id::DISTORTION_TYPE.getParamID()),
+          webDistortionTypeRelay, nullptr} {
   juce::ignoreUnused(processorRef);
 
   addAndMakeVisible(webView);
