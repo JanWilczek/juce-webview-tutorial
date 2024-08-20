@@ -75,12 +75,13 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Plot with Plotly
+  const base = -60;
   Plotly.newPlot("outputLevelPlot", {
     data: [
       {
         x: ["left"],
-        y: [-60],
-        base: [-60],
+        y: [base],
+        base: [base],
         type: "bar",
       },
     ],
@@ -97,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
           {
             data: [
               {
-                y: [levelData.left + 60],
+                y: [levelData.left - base],
               },
             ],
             traces: [0],
