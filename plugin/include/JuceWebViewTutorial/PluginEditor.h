@@ -32,15 +32,14 @@ private:
   AudioPluginAudioProcessor& processorRef;
 
   juce::Slider gainSlider{"gain slider"};
-  juce::AudioProcessorValueTreeState::SliderAttachment gainSliderAttachment;
+  juce::SliderParameterAttachment gainSliderAttachment;
 
   juce::ToggleButton bypassButton{"Bypass"};
-  juce::AudioProcessorValueTreeState::ButtonAttachment bypassButtonAttachment;
+  juce::ButtonParameterAttachment bypassButtonAttachment;
 
   juce::Label distortionTypeLabel{"distortion type label", "Distortion"};
   juce::ComboBox distortionTypeComboBox{"distortion type combo box"};
-  juce::AudioProcessorValueTreeState::ComboBoxAttachment
-      distortionTypeComboBoxAttachment;
+  juce::ComboBoxParameterAttachment distortionTypeComboBoxAttachment;
 
   // Web*Relay class instances must be initialized before the
   // WebBrowserComponent because the WebBrowserComponent calls their methods in

@@ -59,13 +59,15 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
     AudioPluginAudioProcessor& p)
     : AudioProcessorEditor(&p),
       processorRef(p),
-      gainSliderAttachment{processorRef.state, id::GAIN.getParamID(),
-                           gainSlider},
-      bypassButtonAttachment{processorRef.state, id::BYPASS.getParamID(),
-                             bypassButton},
-      distortionTypeComboBoxAttachment{processorRef.state,
-                                       id::DISTORTION_TYPE.getParamID(),
-                                       distortionTypeComboBox},
+      gainSliderAttachment{
+          *processorRef.state.getParameter(id::GAIN.getParamID()), gainSlider,
+          nullptr},
+      bypassButtonAttachment{
+          *processorRef.state.getParameter(id::BYPASS.getParamID()),
+          bypassButton, nullptr},
+      distortionTypeComboBoxAttachment{
+          *processorRef.state.getParameter(id::DISTORTION_TYPE.getParamID()),
+          distortionTypeComboBox, nullptr},
       webGainRelay{webView, id::GAIN.getParamID()},
       webBypassRelay{webView, id::BYPASS.getParamID()},
       webDistortionTypeRelay{webView, "distortionTypeComboBox"},
