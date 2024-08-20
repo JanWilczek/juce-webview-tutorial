@@ -9,7 +9,7 @@
 #include "juce_gui_extra/juce_gui_extra.h"
 #include "JuceWebViewTutorial/ParameterIDs.hpp"
 
-namespace audio_plugin {
+namespace webview_plugin {
 namespace {
 std::vector<std::byte> streamToVector(juce::InputStream& stream) {
   // Workaround to make ssize_t work cross-platform.
@@ -247,4 +247,4 @@ void AudioPluginAudioProcessorEditor::nativeFunction(
       juce::dontSendNotification);
   completion("nativeFunction callback: All OK!");
 }
-}  // namespace audio_plugin
+}  // namespace webview_plugin
