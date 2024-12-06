@@ -26,7 +26,6 @@ jobs:
       if: matrix.os == 'macos-14'
       run: sudo xcode-select -s /Applications/Xcode_15.3.app/Contents/Developer
     - uses: actions/checkout@v4
-
     - name: Cache dependencies
       id: cache-libs
       uses: actions/cache@v4
