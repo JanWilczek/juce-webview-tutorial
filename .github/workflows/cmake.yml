@@ -27,6 +27,11 @@ jobs:
       run: sudo xcode-select -s /Applications/Xcode_15.3.app/Contents/Developer
     - uses: actions/checkout@v4
 
+    - name: Download WebView2 on Windows
+      if: runner.os == 'windows-latest'
+      run: .\scripts\DownloadWebView2.ps1
+      shell: pwsh
+
     - name: Cache dependencies
       id: cache-libs
       uses: actions/cache@v4
