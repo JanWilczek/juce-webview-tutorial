@@ -68,9 +68,9 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
       distortionTypeComboBoxAttachment{
           *processorRef.state.getParameter(id::DISTORTION_TYPE.getParamID()),
           distortionTypeComboBox, nullptr},
-      webGainRelay{webView, id::GAIN.getParamID()},
-      webBypassRelay{webView, id::BYPASS.getParamID()},
-      webDistortionTypeRelay{webView, "distortionTypeComboBox"},
+      webGainRelay{id::GAIN.getParamID()},
+      webBypassRelay{id::BYPASS.getParamID()},
+      webDistortionTypeRelay{"distortionTypeComboBox"},
       webView{
           juce::WebBrowserComponent::Options{}
               .withBackend(
