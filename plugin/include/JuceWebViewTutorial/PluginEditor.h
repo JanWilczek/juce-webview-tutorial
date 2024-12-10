@@ -41,18 +41,12 @@ private:
   juce::ComboBox distortionTypeComboBox{"distortion type combo box"};
   juce::ComboBoxParameterAttachment distortionTypeComboBoxAttachment;
 
-  // Web*Relay class instances must be initialized before the
-  // WebBrowserComponent because the WebBrowserComponent calls their methods in
-  // its constructor.
   juce::WebSliderRelay webGainRelay;
   juce::WebToggleButtonRelay webBypassRelay;
   juce::WebComboBoxRelay webDistortionTypeRelay;
 
   juce::WebBrowserComponent webView;
 
-  // Web*ParameterAttachment class instances must be initialized after
-  // the WebBrowserComponent because they interact with it
-  // transitively through Web*Relay class instances.
   juce::WebSliderParameterAttachment webGainSliderAttachment;
   juce::WebToggleButtonParameterAttachment webBypassToggleAttachment;
   juce::WebComboBoxParameterAttachment webDistortionTypeComboBoxAttachment;

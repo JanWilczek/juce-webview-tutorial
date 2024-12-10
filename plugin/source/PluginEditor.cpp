@@ -12,7 +12,6 @@
 namespace webview_plugin {
 namespace {
 std::vector<std::byte> streamToVector(juce::InputStream& stream) {
-  // Workaround to make ssize_t work cross-platform.
   using namespace juce;
   const auto sizeInBytes = static_cast<size_t>(stream.getTotalLength());
   std::vector<std::byte> result(sizeInBytes);
