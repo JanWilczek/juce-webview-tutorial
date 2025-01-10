@@ -162,13 +162,11 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
 
   addAndMakeVisible(distortionTypeLabel);
 
-  const auto distortionTypeParameter =
-      dynamic_cast<juce::AudioParameterChoice*>(
-          processorRef.getState().getParameter(
-              id::DISTORTION_TYPE.getParamID()));
-  distortionTypeComboBox.addItemList(distortionTypeParameter->choices, 1);
+  const auto& distortionTypeParameter =
+      processorRef.getDistortionTypeParameter();
+  distortionTypeComboBox.addItemList(distortionTypeParameter.choices, 1);
   distortionTypeComboBox.setSelectedItemIndex(
-      distortionTypeParameter->getIndex(), juce::dontSendNotification);
+      distortionTypeParameter.getIndex(), juce::dontSendNotification);
   addAndMakeVisible(distortionTypeComboBox);
 
   setResizable(true, true);

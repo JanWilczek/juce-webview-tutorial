@@ -40,6 +40,11 @@ public:
     return state;
   }
 
+  [[nodiscard]] const juce::AudioParameterChoice& getDistortionTypeParameter()
+      const noexcept {
+    return *parameters.distortionType;
+  }
+
   std::atomic<float> outputLevelLeft;
 
 private:
