@@ -59,14 +59,14 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
     : AudioProcessorEditor(&p),
       processorRef(p),
       gainSliderAttachment{
-          *processorRef.state.getParameter(id::GAIN.getParamID()), gainSlider,
-          nullptr},
+          *processorRef.getState().getParameter(id::GAIN.getParamID()),
+          gainSlider, nullptr},
       bypassButtonAttachment{
-          *processorRef.state.getParameter(id::BYPASS.getParamID()),
+          *processorRef.getState().getParameter(id::BYPASS.getParamID()),
           bypassButton, nullptr},
-      distortionTypeComboBoxAttachment{
-          *processorRef.state.getParameter(id::DISTORTION_TYPE.getParamID()),
-          distortionTypeComboBox, nullptr},
+      distortionTypeComboBoxAttachment{*processorRef.getState().getParameter(
+                                           id::DISTORTION_TYPE.getParamID()),
+                                       distortionTypeComboBox, nullptr},
       webGainRelay{id::GAIN.getParamID()},
       webBypassRelay{id::BYPASS.getParamID()},
       webDistortionTypeRelay{"distortionTypeComboBox"},
@@ -112,14 +112,14 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
               .withOptionsFrom(webBypassRelay)
               .withOptionsFrom(webDistortionTypeRelay)},
       webGainSliderAttachment{
-          *processorRef.state.getParameter(id::GAIN.getParamID()), webGainRelay,
-          nullptr},
+          *processorRef.getState().getParameter(id::GAIN.getParamID()),
+          webGainRelay, nullptr},
       webBypassToggleAttachment{
-          *processorRef.state.getParameter(id::BYPASS.getParamID()),
+          *processorRef.getState().getParameter(id::BYPASS.getParamID()),
           webBypassRelay, nullptr},
-      webDistortionTypeComboBoxAttachment{
-          *processorRef.state.getParameter(id::DISTORTION_TYPE.getParamID()),
-          webDistortionTypeRelay, nullptr} {
+      webDistortionTypeComboBoxAttachment{*processorRef.getState().getParameter(
+                                              id::DISTORTION_TYPE.getParamID()),
+                                          webDistortionTypeRelay, nullptr} {
   addAndMakeVisible(webView);
 
   // WebBrowserComponent can display any URL
@@ -162,12 +162,11 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
 
   addAndMakeVisible(distortionTypeLabel);
 
-  const auto distortionTypeParameter =
-      dynamic_cast<juce::AudioParameterChoice*>(
-          processorRef.state.getParameter(id::DISTORTION_TYPE.getParamID()));
-  distortionTypeComboBox.addItemList(distortionTypeParameter->choices, 1);
+  const auto& distortionTypeParameter =
+      processorRef.getDistortionTypeParameter();
+  distortionTypeComboBox.addItemList(distortionTypeParameter.choices, 1);
   distortionTypeComboBox.setSelectedItemIndex(
-      distortionTypeParameter->getIndex(), juce::dontSendNotification);
+      distortionTypeParameter.getIndex(), juce::dontSendNotification);
   addAndMakeVisible(distortionTypeComboBox);
 
   setResizable(true, true);

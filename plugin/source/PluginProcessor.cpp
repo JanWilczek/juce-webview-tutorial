@@ -7,24 +7,6 @@
 
 namespace webview_plugin {
 namespace {
-juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout() {
-  using namespace juce;
-  AudioProcessorValueTreeState::ParameterLayout layout;
-
-  layout.add(std::make_unique<AudioParameterFloat>(
-      id::GAIN, "gain", NormalisableRange<float>{0.f, 1.f, 0.01f, 0.9f}, 1.f));
-
-  layout.add(std::make_unique<AudioParameterBool>(
-      id::BYPASS, "bypass", false,
-      AudioParameterBoolAttributes{}.withLabel("Bypass")));
-
-  layout.add(std::make_unique<AudioParameterChoice>(
-      id::DISTORTION_TYPE, "distortion type",
-      StringArray{"none", "tanh(kx)/tanh(k)", "sigmoid"}, 0));
-
-  return layout;
-}
-
 void forEachSampleIn(juce::AudioBuffer<float>& buffer,
                      std::function<void(float&)> function) {
   for (auto channel = 0; channel < buffer.getNumChannels(); ++channel) {
@@ -46,12 +28,7 @@ AudioPluginAudioProcessor::AudioPluginAudioProcessor()
               .withOutput("Output", juce::AudioChannelSet::stereo(), true)
 #endif
               ),
-      state{*this, nullptr, "PARAMETERS", createParameterLayout()},
-      gain{state.getRawParameterValue(id::GAIN.getParamID())},
-      bypass{dynamic_cast<juce::AudioParameterBool*>(
-          state.getParameter(id::BYPASS.getParamID()))},
-      distortionType{dynamic_cast<juce::AudioParameterChoice*>(
-          state.getParameter(id::DISTORTION_TYPE.getParamID()))} {
+      state{*this, nullptr, "PARAMETERS", createParameterLayout(parameters)} {
 }
 
 AudioPluginAudioProcessor::~AudioPluginAudioProcessor() {}
@@ -175,18 +152,18 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
     buffer.clear(i, 0, buffer.getNumSamples());
 
-  if (bypass->get() || buffer.getNumSamples() == 0) {
+  if (parameters.bypass->get() || buffer.getNumSamples() == 0) {
     return;
   }
 
-  if (distortionType->getIndex() == 1) {
+  if (parameters.distortionType->getIndex() == 1) {
     // tanh(kx)/tanh(k)
     forEachSampleIn(buffer, [](float& sample) {
       constexpr auto SATURATION = 5.f;
       static const auto normalizationFactor = std::tanh(SATURATION);
       sample = std::tanh(SATURATION * sample) / normalizationFactor;
     });
-  } else if (distortionType->getIndex() == 2) {
+  } else if (parameters.distortionType->getIndex() == 2) {
     // sigmoid
     forEachSampleIn(buffer, [](float& sample) {
       constexpr auto SATURATION = 5.f;
@@ -194,7 +171,7 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     });
   }
 
-  buffer.applyGain(*gain);
+  buffer.applyGain(parameters.gain->get());
 
   const auto inBlock =
       juce::dsp::AudioBlock<float>{buffer}.getSubsetChannelBlock(
@@ -230,6 +207,38 @@ void AudioPluginAudioProcessor::setStateInformation(const void* data,
   // block, whose contents will have been created by the getStateInformation()
   // call.
   juce::ignoreUnused(data, sizeInBytes);
+}
+
+juce::AudioProcessorValueTreeState::ParameterLayout
+AudioPluginAudioProcessor::createParameterLayout(
+    AudioPluginAudioProcessor::Parameters& parameters) {
+  using namespace juce;
+  AudioProcessorValueTreeState::ParameterLayout layout;
+
+  {
+    auto parameter = std::make_unique<AudioParameterFloat>(
+        id::GAIN, "gain", NormalisableRange<float>{0.f, 1.f, 0.01f, 0.9f}, 1.f);
+    parameters.gain = parameter.get();
+    layout.add(std::move(parameter));
+  }
+
+  {
+    auto parameter = std::make_unique<AudioParameterBool>(
+        id::BYPASS, "bypass", false,
+        AudioParameterBoolAttributes{}.withLabel("Bypass"));
+    parameters.bypass = parameter.get();
+    layout.add(std::move(parameter));
+  }
+
+  {
+    auto parameter = std::make_unique<AudioParameterChoice>(
+        id::DISTORTION_TYPE, "distortion type",
+        StringArray{"none", "tanh(kx)/tanh(k)", "sigmoid"}, 0);
+    parameters.distortionType = parameter.get();
+    layout.add(std::move(parameter));
+  }
+
+  return layout;
 }
 }  // namespace webview_plugin
 
