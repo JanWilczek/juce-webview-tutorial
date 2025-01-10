@@ -36,14 +36,21 @@ public:
   void getStateInformation(juce::MemoryBlock& destData) override;
   void setStateInformation(const void* data, int sizeInBytes) override;
 
-  juce::AudioProcessorValueTreeState state;
+  juce::AudioProcessorValueTreeState& getState() { return state; }
   std::atomic<float> outputLevelLeft;
 
 private:
-  std::atomic<float>* gain{nullptr};
-  juce::AudioParameterBool* bypass{nullptr};
-  juce::AudioParameterChoice* distortionType{nullptr};
+  struct Parameters {
+    juce::AudioParameterFloat* gain{nullptr};
+    juce::AudioParameterBool* bypass{nullptr};
+    juce::AudioParameterChoice* distortionType{nullptr};
+  };
 
+  [[nodiscard]] static juce::AudioProcessorValueTreeState::ParameterLayout
+  createParameterLayout(Parameters&);
+
+  Parameters parameters;
+  juce::AudioProcessorValueTreeState state;
   juce::dsp::BallisticsFilter<float> envelopeFollower;
   juce::AudioBuffer<float> envelopeFollowerOutputBuffer;
 
