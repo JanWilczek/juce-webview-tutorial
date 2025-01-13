@@ -4,20 +4,9 @@
 #include "JuceWebViewTutorial/ParameterIDs.hpp"
 #include <cmath>
 #include <functional>
+#include <juce_dsp/juce_dsp.h>
 
 namespace webview_plugin {
-namespace {
-void forEachSampleIn(juce::AudioBuffer<float>& buffer,
-                     std::function<void(float&)> function) {
-  for (auto channel = 0; channel < buffer.getNumChannels(); ++channel) {
-    auto channelToWrite = buffer.getWritePointer(channel);
-    for (auto sample = 0; sample < buffer.getNumSamples(); ++sample) {
-      function(channelToWrite[sample]);
-    }
-  }
-}
-}  // namespace
-
 AudioPluginAudioProcessor::AudioPluginAudioProcessor()
     : AudioProcessor(
           BusesProperties()
@@ -156,18 +145,21 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     return;
   }
 
+  juce::dsp::AudioBlock<float> block{buffer};
   if (parameters.distortionType->getIndex() == 1) {
     // tanh(kx)/tanh(k)
-    forEachSampleIn(buffer, [](float& sample) {
+    juce::dsp::AudioBlock<float>::process(block, block, [](float sample) {
       constexpr auto SATURATION = 5.f;
       static const auto normalizationFactor = std::tanh(SATURATION);
       sample = std::tanh(SATURATION * sample) / normalizationFactor;
+      return sample;
     });
   } else if (parameters.distortionType->getIndex() == 2) {
     // sigmoid
-    forEachSampleIn(buffer, [](float& sample) {
+    juce::dsp::AudioBlock<float>::process(block, block, [](float sample) {
       constexpr auto SATURATION = 5.f;
       sample = 2.f / (1.f + std::exp(-SATURATION * sample)) - 1.f;
+      return sample;
     });
   }
 
