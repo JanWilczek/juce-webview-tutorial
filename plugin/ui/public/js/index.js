@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "DISTORTION_TYPE"
   );
   distortionTypeComboBoxState.propertiesChangedEvent.addListener(() => {
+    distortionTypeComboBox.innerHTML = "";
     distortionTypeComboBoxState.properties.choices.forEach((choice) => {
       distortionTypeComboBox.innerHTML += `<option value=\"${choice}\">${choice}</option>`;
     });
