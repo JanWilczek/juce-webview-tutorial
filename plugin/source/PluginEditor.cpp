@@ -69,7 +69,7 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
                                        distortionTypeComboBox, nullptr},
       webGainRelay{id::GAIN.getParamID()},
       webBypassRelay{id::BYPASS.getParamID()},
-      webDistortionTypeRelay{"distortionTypeComboBox"},
+      webDistortionTypeRelay{id::DISTORTION_TYPE.getParamID()},
       webView{
           juce::WebBrowserComponent::Options{}
               .withBackend(
