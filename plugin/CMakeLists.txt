@@ -49,12 +49,41 @@ target_include_directories(${PROJECT_NAME}
 # Mark JUCE headers as system headers to suppress warnings in them
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${JUCE_MODULES_DIR})
 
+# Folder where web UI data reside
+set(WEBVIEW_FILES_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ui/public")
+
+# Copy JUCE frontend library to plugin UI files
+file(COPY "${JUCE_MODULES_DIR}/juce_gui_extra/native/javascript/" DESTINATION "${UI_FILES_SOURCE_DIR}/js/juce/")
+
+# Zip WebView files
+set(WEBVIEW_FILES_ZIP_NAME "webview_files.zip")
+set(TARGET_WEBVIEW_FILES_ZIP_PATH "${CMAKE_BINARY_DIR}/${WEBVIEW_FILES_ZIP_NAME}")
+get_filename_component(PUBLIC_PATH "${WEBVIEW_FILES_SOURCE_DIR}" ABSOLUTE)
+file(
+  ARCHIVE_CREATE
+  OUTPUT
+  "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
+  PATHS
+  "${PUBLIC_PATH}"
+  FORMAT
+  zip
+  VERBOSE
+)
+
+# Package web UI sources as binary data
+juce_add_binary_data(WebViewFiles
+    HEADER_NAME WebViewFiles.h
+    NAMESPACE webview_files
+    SOURCES ${TARGET_WEBVIEW_FILES_ZIP_PATH}
+)
+
 # Links to all necessary dependencies. The present ones are recommended by JUCE.
 # If you use one of the additional modules, like the DSP module, you need to specify it here.
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         juce::juce_audio_utils
         juce::juce_dsp
+        WebViewFiles
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
@@ -75,19 +104,3 @@ set_source_files_properties(${SOURCES} PROPERTIES COMPILE_OPTIONS "${CXX_PROJECT
 
 # In Visual Studio this command provides a nice grouping of source files in "filters".
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/..)
-
-# Folder where web UI data reside
-set(UI_FILES_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ui/public")
-
-# Copy JUCE frontend library to plugin UI files
-file(COPY "${JUCE_MODULES_DIR}/juce_gui_extra/native/javascript/" DESTINATION "${UI_FILES_SOURCE_DIR}/js/juce/")
-
-# Copy WebView UI files; does not allow hot reloading
-get_target_property(PLUGIN_OUTPUT_DIR ${PROJECT_NAME} RUNTIME_OUTPUT_DIRECTORY)
-set(UI_FILES_DEST_DIR "${PLUGIN_OUTPUT_DIR}/public")
-
-add_custom_command(
-  TARGET ${PROJECT_NAME} POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${UI_FILES_SOURCE_DIR} ${UI_FILES_DEST_DIR}
-  COMMENT "Copying UI files to plugin's output directory"
-)
