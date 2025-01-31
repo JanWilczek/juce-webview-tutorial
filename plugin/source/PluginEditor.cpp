@@ -8,6 +8,7 @@
 #include "juce_graphics/juce_graphics.h"
 #include "juce_gui_extra/juce_gui_extra.h"
 #include "JuceWebViewTutorial/ParameterIDs.hpp"
+#include <WebViewFiles.h>
 
 namespace webview_plugin {
 namespace {
@@ -49,6 +50,27 @@ static const char* getMimeForExtension(const juce::String& extension) {
 juce::Identifier getExampleEventId() {
   static const juce::Identifier id{"exampleEvent"};
   return id;
+}
+
+std::vector<std::byte> getWebViewFileAsBytes(const juce::String& filepath) {
+  juce::MemoryInputStream zipStream{webview_files::webview_files_zip,
+                                    webview_files::webview_files_zipSize,
+                                    false};
+  juce::ZipFile zipFile{zipStream};
+
+  // We have to enumerate zip entries instead of retrieving them by name
+  // because their names may have prefixes
+  for (const auto i : std::views::iota(0, zipFile.getNumEntries())) {
+    const auto* zipEntry = zipFile.getEntry(i);
+
+    if (zipEntry->filename.endsWith(filepath)) {
+      const std::unique_ptr<juce::InputStream> entryStream{
+          zipFile.createStreamForEntry(*zipEntry)};
+      return streamToVector(*entryStream);
+    }
+  }
+
+  return {};
 }
 
 constexpr auto LOCAL_DEV_SERVER_ADDRESS = "http://127.0.0.1:8080";
@@ -197,19 +219,6 @@ auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const
     -> std::optional<Resource> {
   std::cout << "ResourceProvider called with " << url << std::endl;
 
-  static const auto resourceFilesRoot =
-      juce::File::getSpecialLocation(
-          juce::File::SpecialLocationType::currentApplicationFile)
-          .getParentDirectory()
-          .getParentDirectory()
-          .getChildFile("public");
-
-  [[maybe_unused]] static auto printRootOnce = [] {
-    std::cout << "Resource files root is "
-              << resourceFilesRoot.getFullPathName() << std::endl;
-    return true;
-  }();
-
   const auto resourceToRetrieve =
       url == "/" ? "index.html" : url.fromFirstOccurrenceOf("/", false, false);
 
@@ -223,12 +232,11 @@ auto AudioPluginAudioProcessorEditor::getResource(const juce::String& url) const
         streamToVector(stream), juce::String{"application/json"}};
   }
 
-  const auto resource =
-      resourceFilesRoot.getChildFile(resourceToRetrieve).createInputStream();
-  if (resource) {
+  const auto resource = getWebViewFileAsBytes(resourceToRetrieve);
+  if (!resource.empty()) {
     const auto extension =
         resourceToRetrieve.fromLastOccurrenceOf(".", false, false);
-    return Resource{streamToVector(*resource), getMimeForExtension(extension)};
+    return Resource{std::move(resource), getMimeForExtension(extension)};
   }
 
   return std::nullopt;
