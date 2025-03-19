@@ -52,22 +52,29 @@ juce::Identifier getExampleEventId() {
   return id;
 }
 
+/**
+ * @brief Get a web UI file as bytes
+ *
+ * @param filepath path of the form "index.html", "js/index.js", etc.
+ * @return std::vector<std::byte> with bytes of a read file or an empty vector
+ * if the file is not contained in webview_files.zip
+ */
 std::vector<std::byte> getWebViewFileAsBytes(const juce::String& filepath) {
   juce::MemoryInputStream zipStream{webview_files::webview_files_zip,
                                     webview_files::webview_files_zipSize,
                                     false};
   juce::ZipFile zipFile{zipStream};
 
-  // We have to enumerate zip entries instead of retrieving them by name
-  // because their names may have prefixes
-  for (const auto i : std::views::iota(0, zipFile.getNumEntries())) {
-    const auto* zipEntry = zipFile.getEntry(i);
+  if (auto* zipEntry = zipFile.getEntry(filepath)) {
+    const std::unique_ptr<juce::InputStream> entryStream{
+        zipFile.createStreamForEntry(*zipEntry)};
 
-    if (zipEntry->filename.endsWith(filepath)) {
-      const std::unique_ptr<juce::InputStream> entryStream{
-          zipFile.createStreamForEntry(*zipEntry)};
-      return streamToVector(*entryStream);
+    if (entryStream == nullptr) {
+      jassertfalse;
+      return {};
     }
+
+    return streamToVector(*entryStream);
   }
 
   return {};

@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 3.22)
+# WORKING_DIRECTORY argument of file() command
+# was introduced in CMake 3.31
+cmake_minimum_required(VERSION 3.31 FATAL_ERROR)
 
 # Version is needed by JUCE.
 project(JuceWebViewPlugin VERSION 0.1.0)
@@ -64,9 +66,12 @@ file(
   OUTPUT
   "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
   PATHS
-  "${PUBLIC_PATH}"
+  "${PUBLIC_PATH}/index.html"
+  "${PUBLIC_PATH}/js"
   FORMAT
   zip
+  WORKING_DIRECTORY
+  "${PUBLIC_PATH}"
   VERBOSE
 )
 

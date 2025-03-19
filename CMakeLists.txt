@@ -1,5 +1,5 @@
 # Mandatory line, sets the minimum version of CMake that should be used with this repository.
-# I specified 3.22 because I trust it. However, currently I have 3.26 installed on my machine.
+# JUCE requires CMake 3.22 or higher.
 # To verify your version run
 # $ cmake --version
 cmake_minimum_required(VERSION 3.22)
