@@ -75,6 +75,10 @@ file(
   VERBOSE
 )
 
+# Pass the prefix of the zipped files (e.g., "public/") to C++
+cmake_path(GET PUBLIC_PATH FILENAME ZIPPED_FILES_PREFIX)
+target_compile_definitions(${PROJECT_NAME} PRIVATE ZIPPED_FILES_PREFIX="${ZIPPED_FILES_PREFIX}/")
+
 # Package web UI sources as binary data
 juce_add_binary_data(WebViewFiles
     HEADER_NAME WebViewFiles.h

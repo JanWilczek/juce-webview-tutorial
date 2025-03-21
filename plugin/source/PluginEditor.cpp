@@ -52,6 +52,11 @@ juce::Identifier getExampleEventId() {
   return id;
 }
 
+#ifndef ZIPPED_FILES_PREFIX
+#error \
+    "You must provide the prefix of zipped web UI files' paths, e.g., 'public/', in the ZIPPED_FILES_PREFIX compile definition"
+#endif
+
 /**
  * @brief Get a web UI file as bytes
  *
@@ -65,7 +70,6 @@ std::vector<std::byte> getWebViewFileAsBytes(const juce::String& filepath) {
                                     false};
   juce::ZipFile zipFile{zipStream};
 
-  constexpr auto ZIPPED_FILES_PREFIX = "public/";
   if (auto* zipEntry = zipFile.getEntry(ZIPPED_FILES_PREFIX + filepath)) {
     const std::unique_ptr<juce::InputStream> entryStream{
         zipFile.createStreamForEntry(*zipEntry)};
