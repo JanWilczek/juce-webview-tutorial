@@ -1,6 +1,4 @@
-# WORKING_DIRECTORY argument of file() command
-# was introduced in CMake 3.31
-cmake_minimum_required(VERSION 3.31 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
 # Version is needed by JUCE.
 project(JuceWebViewPlugin VERSION 0.1.0)
@@ -62,17 +60,22 @@ set(WEBVIEW_FILES_ZIP_NAME "webview_files.zip")
 set(TARGET_WEBVIEW_FILES_ZIP_PATH "${CMAKE_BINARY_DIR}/${WEBVIEW_FILES_ZIP_NAME}")
 cmake_path(ABSOLUTE_PATH WEBVIEW_FILES_SOURCE_DIR NORMALIZE OUTPUT_VARIABLE PUBLIC_PATH )
 cmake_path(GET PUBLIC_PATH PARENT_PATH WORKING_DIRECTORY)
-file(
-  ARCHIVE_CREATE
-  OUTPUT
+
+add_custom_command(
+  OUTPUT "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
+  COMMAND
+  ${CMAKE_COMMAND} -E tar cv
   "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
-  PATHS
+  --format=zip
   "${PUBLIC_PATH}"
-  FORMAT
-  zip
   WORKING_DIRECTORY
   "${WORKING_DIRECTORY}"
-  VERBOSE
+  COMMENT "Zipping WebView files..."
+  VERBATIM
+)
+add_custom_target(ZipWebViewFiles
+  ALL
+  DEPENDS "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
 )
 
 # Pass the prefix of the zipped files (e.g., "public/") to C++
@@ -85,6 +88,7 @@ juce_add_binary_data(WebViewFiles
     NAMESPACE webview_files
     SOURCES ${TARGET_WEBVIEW_FILES_ZIP_PATH}
 )
+add_dependencies(WebViewFiles ZipWebViewFiles)
 
 # Links to all necessary dependencies. The present ones are recommended by JUCE.
 # If you use one of the additional modules, like the DSP module, you need to specify it here.
