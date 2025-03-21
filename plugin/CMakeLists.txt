@@ -61,21 +61,18 @@ set(TARGET_WEBVIEW_FILES_ZIP_PATH "${CMAKE_BINARY_DIR}/${WEBVIEW_FILES_ZIP_NAME}
 cmake_path(ABSOLUTE_PATH WEBVIEW_FILES_SOURCE_DIR NORMALIZE OUTPUT_VARIABLE PUBLIC_PATH )
 cmake_path(GET PUBLIC_PATH PARENT_PATH WORKING_DIRECTORY)
 
-add_custom_command(
-  OUTPUT "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
+add_custom_target(ZipWebViewFiles
   COMMAND
-  ${CMAKE_COMMAND} -E tar cv
+  ${CMAKE_COMMAND} -E tar cvf
   "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
   --format=zip
   "${PUBLIC_PATH}"
+  BYPRODUCTS
+  "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
   WORKING_DIRECTORY
   "${WORKING_DIRECTORY}"
   COMMENT "Zipping WebView files..."
   VERBATIM
-)
-add_custom_target(ZipWebViewFiles
-  ALL
-  DEPENDS "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
 )
 
 # Pass the prefix of the zipped files (e.g., "public/") to C++
