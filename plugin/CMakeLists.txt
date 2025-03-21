@@ -13,6 +13,8 @@ juce_add_plugin(${PROJECT_NAME}
     PLUGIN_CODE JWVT
     FORMATS AU VST3 Standalone
     PRODUCT_NAME "JuceWebViewPlugin"
+    # WebViews use web browser features: find necessary packages in the system to link against
+    NEEDS_WEB_BROWSER TRUE
     # This will force JUCE to look for the WebView2 NuGet package on Windows
     NEEDS_WEBVIEW2 TRUE
 )
