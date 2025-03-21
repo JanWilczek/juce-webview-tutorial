@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
 # Version is needed by JUCE.
 project(JuceWebViewPlugin VERSION 0.1.0)
@@ -13,6 +13,8 @@ juce_add_plugin(${PROJECT_NAME}
     PLUGIN_CODE JWVT
     FORMATS AU VST3 Standalone
     PRODUCT_NAME "JuceWebViewPlugin"
+    # WebViews use web browser features: find necessary packages in the system to link against
+    NEEDS_WEB_BROWSER TRUE
     # This will force JUCE to look for the WebView2 NuGet package on Windows
     NEEDS_WEBVIEW2 TRUE
 )
@@ -58,17 +60,26 @@ file(COPY "${JUCE_MODULES_DIR}/juce_gui_extra/native/javascript/" DESTINATION "$
 # Zip WebView files
 set(WEBVIEW_FILES_ZIP_NAME "webview_files.zip")
 set(TARGET_WEBVIEW_FILES_ZIP_PATH "${CMAKE_BINARY_DIR}/${WEBVIEW_FILES_ZIP_NAME}")
-get_filename_component(PUBLIC_PATH "${WEBVIEW_FILES_SOURCE_DIR}" ABSOLUTE)
-file(
-  ARCHIVE_CREATE
-  OUTPUT
+cmake_path(ABSOLUTE_PATH WEBVIEW_FILES_SOURCE_DIR NORMALIZE OUTPUT_VARIABLE PUBLIC_PATH )
+cmake_path(GET PUBLIC_PATH PARENT_PATH WORKING_DIRECTORY)
+
+add_custom_target(ZipWebViewFiles
+  COMMAND
+  ${CMAKE_COMMAND} -E tar cvf
   "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
-  PATHS
+  --format=zip
   "${PUBLIC_PATH}"
-  FORMAT
-  zip
-  VERBOSE
+  BYPRODUCTS
+  "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
+  WORKING_DIRECTORY
+  "${WORKING_DIRECTORY}"
+  COMMENT "Zipping WebView files..."
+  VERBATIM
 )
+
+# Pass the prefix of the zipped files (e.g., "public/") to C++
+cmake_path(GET PUBLIC_PATH FILENAME ZIPPED_FILES_PREFIX)
+target_compile_definitions(${PROJECT_NAME} PRIVATE ZIPPED_FILES_PREFIX="${ZIPPED_FILES_PREFIX}/")
 
 # Package web UI sources as binary data
 juce_add_binary_data(WebViewFiles
@@ -76,6 +87,7 @@ juce_add_binary_data(WebViewFiles
     NAMESPACE webview_files
     SOURCES ${TARGET_WEBVIEW_FILES_ZIP_PATH}
 )
+add_dependencies(WebViewFiles ZipWebViewFiles)
 
 # Links to all necessary dependencies. The present ones are recommended by JUCE.
 # If you use one of the additional modules, like the DSP module, you need to specify it here.
