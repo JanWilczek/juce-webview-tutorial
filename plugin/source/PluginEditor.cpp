@@ -65,7 +65,8 @@ std::vector<std::byte> getWebViewFileAsBytes(const juce::String& filepath) {
                                     false};
   juce::ZipFile zipFile{zipStream};
 
-  if (auto* zipEntry = zipFile.getEntry(filepath)) {
+  constexpr auto ZIPPED_FILES_PREFIX = "public/";
+  if (auto* zipEntry = zipFile.getEntry(ZIPPED_FILES_PREFIX + filepath)) {
     const std::unique_ptr<juce::InputStream> entryStream{
         zipFile.createStreamForEntry(*zipEntry)};
 
